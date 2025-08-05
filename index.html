@@ -12,6 +12,10 @@
       --radius: 12px;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -36,6 +40,7 @@
       justify-content: center;
       align-items: center;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     @keyframes pulseText {
@@ -62,14 +67,17 @@
       flex-wrap: wrap;
       justify-content: center;
       margin-top: 2rem;
+      width: 100%;
+      padding: 1rem;
     }
 
     .product-card {
       background: var(--bg);
       border-radius: var(--radius);
       padding: 1.5rem;
-      margin: 2rem;
-      width: 300px;
+      margin: 1rem;
+      width: 100%;
+      max-width: 320px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
       animation: fadeIn 0.8s ease forwards;
       position: relative;
@@ -111,13 +119,22 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s ease;
       margin-top: 1rem;
+      overflow: hidden;
+      height: 48px;
       position: relative;
     }
 
-    .buy-btn:disabled {
-      background: #888;
+    .buy-btn span {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    .buy-btn.loading span {
+      transform: translateY(100%);
+      opacity: 0;
     }
 
     .buy-btn.loading::after {
@@ -139,7 +156,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Floating Create Button */
     #createBtn {
       position: fixed;
       bottom: 20px;
@@ -154,6 +170,7 @@
       cursor: pointer;
       animation: bounce 2s infinite;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      z-index: 11;
     }
 
     @keyframes bounce {
@@ -182,7 +199,8 @@
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      width: 300px;
+      width: 90%;
+      max-width: 360px;
       animation: fadeIn 0.5s ease;
     }
 
@@ -203,6 +221,11 @@
       cursor: pointer;
       font-weight: bold;
     }
+
+    #uploadForm input[type="file"] {
+      background: none;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -218,6 +241,8 @@
       <input type="text" id="titleInput" placeholder="Produktname" required />
       <input type="number" id="startInput" placeholder="Startpreis (€)" required />
       <input type="number" id="minInput" placeholder="Minimalpreis (€)" required />
+      <input type="number" id="dropInput" placeholder="Preisabfall/Minute (€)" required />
+      <input type="file" id="imageInput" accept="image/*" />
       <button type="submit">Produkt hinzufügen</button>
     </form>
   </div>
@@ -231,14 +256,29 @@
     const createBtn = document.getElementById('createBtn');
 
     createBtn.onclick = () => modal.style.display = 'flex';
+
     form.onsubmit = e => {
       e.preventDefault();
       const title = document.getElementById('titleInput').value;
       const start = parseFloat(document.getElementById('startInput').value);
       const min = parseFloat(document.getElementById('minInput').value);
-      modal.style.display = 'none';
-      form.reset();
-      createProductCard({ title, startPrice: start, minPrice: min }, Date.now());
+      const drop = parseFloat(document.getElementById('dropInput').value);
+      const image = document.getElementById('imageInput').files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        modal.style.display = 'none';
+        form.reset();
+        createProductCard({ title, startPrice: start, minPrice: min, dropPerMinute: drop, imageSrc: reader.result }, Date.now());
+      };
+
+      if (image) {
+        reader.readAsDataURL(image);
+      } else {
+        createProductCard({ title, startPrice: start, minPrice: min, dropPerMinute: drop }, Date.now());
+        modal.style.display = 'none';
+        form.reset();
+      }
     };
 
     function animateDigits(element, newValue) {
@@ -261,15 +301,16 @@
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
+        ${product.imageSrc ? `<img src="${product.imageSrc}" style="width:100%;border-radius:var(--radius);margin-bottom:1rem;" />` : ''}
         <div class="product-title">${product.title}</div>
         <div class="price" id="price-${id}">Startpreis: <span class="value">${product.startPrice.toFixed(2)}€</span></div>
         <div class="timer" id="timer-${id}">Letztes Update in: <span class="count" id="countdown-${id}">60</span>s</div>
-        <button class="buy-btn" id="btn-${id}" onclick="buyProduct(${id})">Jetzt kaufen</button>
+        <button class="buy-btn" id="btn-${id}" onclick="buyProduct(${id})"><span>Jetzt kaufen</span></button>
       `;
       container.appendChild(card);
 
       let price = product.startPrice;
-      const dropPerMinute = 0.05;
+      const dropPerMinute = product.dropPerMinute || 0.05;
       let seconds = 60;
       const priceValueEl = card.querySelector('.price .value');
       const countdownEl = card.querySelector('.timer .count');
@@ -300,12 +341,11 @@
 
       btn.classList.add('loading');
       btn.disabled = true;
-      btn.innerText = '';
 
       setTimeout(() => {
         clearInterval(timer);
         btn.classList.remove('loading');
-        btn.innerText = 'Verkauft';
+        btn.innerHTML = '<span>Verkauft</span>';
 
         const priceText = priceEl.textContent.match(/\d+(\.\d{1,2})?/);
         const finalPrice = priceText ? priceText[0] : '???';
