@@ -2,8 +2,12 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OneDrop Marketplace</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
   <style>
     :root {
       --main: #00ffcc;
@@ -25,6 +29,8 @@
       flex-direction: column;
       align-items: center;
       overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 80px;
     }
 
     header {
@@ -68,31 +74,45 @@
       justify-content: center;
       margin-top: 2rem;
       width: 100%;
+      max-width: 1200px;
       padding: 1rem;
+      gap: 1rem;
     }
 
     .product-card {
       background: var(--bg);
       border-radius: var(--radius);
       padding: 1.5rem;
-      margin: 1rem;
-      width: 100%;
-      max-width: 320px;
+      margin: 0.5rem;
+      width: 320px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
       animation: fadeIn 0.8s ease forwards;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .product-card img {
+      width: 100%;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+      object-fit: cover;
+      max-height: 200px;
     }
 
     .product-title {
       font-size: 1.3rem;
       margin-bottom: 1rem;
+      text-align: center;
     }
 
     .price, .timer {
       font-size: 1.1rem;
       margin: 0.5rem 0;
-      height: 1.5rem;
+      height: 1.8rem;
       overflow: hidden;
+      min-height: 28px;
     }
 
     .digit-anim {
@@ -112,24 +132,39 @@
     }
 
     .buy-btn {
-      padding: 0.8rem 1.2rem;
-      background: var(--main);
-      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
       font-weight: bold;
+      background: linear-gradient(135deg, var(--main), #00c3aa);
+      color: #000;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 255, 204, 0.4);
       cursor: pointer;
       margin-top: 1rem;
       overflow: hidden;
-      height: 48px;
+      height: 56px;
       position: relative;
+      transition: all 0.4s ease;
+      min-width: 200px;
+      user-select: none;
+    }
+
+    .buy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 255, 204, 0.5);
     }
 
     .buy-btn span {
-      position: absolute;
+      display: block;
       width: 100%;
       text-align: center;
       transition: transform 0.4s ease, opacity 0.4s ease;
+      font-size: 1rem;
+      z-index: 2;
     }
 
     .buy-btn.loading span {
@@ -143,12 +178,45 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 20px;
-      height: 20px;
-      border: 2px solid transparent;
-      border-top: 2px solid #000;
+      width: 24px;
+      height: 24px;
+      border: 3px solid transparent;
+      border-top: 3px solid #000;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 0.8s linear infinite;
+      z-index: 1;
+    }
+
+    .buy-btn.sold {
+      background: linear-gradient(135deg, #aaa, #777);
+      color: #fff;
+      pointer-events: none;
+      box-shadow: none;
+      animation: soldPulse 0.6s ease, fadeOutText 0.3s ease forwards;
+    }
+
+    .buy-btn.sold span {
+      animation: soldTextIn 0.6s ease forwards;
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    @keyframes soldTextIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes soldPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes fadeOutText {
+      from { color: #000; }
+      to { color: #fff; }
     }
 
     @keyframes fadeIn {
@@ -166,11 +234,12 @@
       border-radius: 50%;
       width: 60px;
       height: 60px;
-      font-size: 2rem;
+      font-size: 2.5rem;
       cursor: pointer;
       animation: bounce 2s infinite;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       z-index: 11;
+      user-select: none;
     }
 
     @keyframes bounce {
@@ -184,7 +253,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -200,7 +269,7 @@
       flex-direction: column;
       gap: 1rem;
       width: 90%;
-      max-width: 360px;
+      max-width: 380px;
       animation: fadeIn 0.5s ease;
     }
 
@@ -208,6 +277,7 @@
       padding: 0.7rem;
       border: none;
       border-radius: var(--radius);
+      font-size: 1rem;
     }
 
     #uploadForm input {
@@ -220,11 +290,117 @@
       color: black;
       cursor: pointer;
       font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    #uploadForm button:hover {
+      background-color: #00d6b3;
     }
 
     #uploadForm input[type="file"] {
       background: none;
       color: white;
+    }
+
+    /* NEU: Countdown Eingaben */
+    #countdownMinutes, #countdownSeconds {
+      width: 80px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* Benachrichtigungen Styles */
+    .notification-container {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      z-index: 10000;
+      perspective: 1000px;
+    }
+
+    .notification {
+      position: relative;
+      background: #ffffff;
+      color: #2d3436;
+      padding: 1.5rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      min-width: 320px;
+      opacity: 0;
+      transform: translateX(120%) rotateY(-25deg) skewX(-5deg);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 1.2rem;
+      cursor: pointer;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+    }
+
+    .notification.active {
+      opacity: 1;
+      transform: translateX(0) rotateY(0) skewX(0);
+    }
+
+    .notification.exit {
+      transform: translateX(150%) rotateY(25deg) skewX(5deg);
+      opacity: 0;
+    }
+
+    .notification-icon {
+      font-size: 1.8rem;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .notification:hover {
+      transform: translateX(0) scale(1.02) !important;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .notification:hover .notification-icon {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: rgba(0,0,0,0.1);
+      width: 100%;
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+      transform-origin: left;
+    }
+
+    .progress {
+      height: 100%;
+      width: 100%;
+      background: currentColor;
+      transform: scaleX(0);
+      animation: progress 5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes progress {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    @media (max-width: 768px) {
+      .notification { min-width: 280px; margin: 0 15px; }
+      .products {
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem;
+      }
+      .product-card {
+        width: 90vw;
+        max-width: none;
+      }
     }
   </style>
 </head>
@@ -239,9 +415,54 @@
   <div id="uploadModal">
     <form id="uploadForm">
       <input type="text" id="titleInput" placeholder="Produktname" required />
-      <input type="number" id="startInput" placeholder="Startpreis (€)" required />
-      <input type="number" id="minInput" placeholder="Minimalpreis (€)" required />
-      <input type="number" id="dropInput" placeholder="Preisabfall/Minute (€)" required />
+      <input
+        type="number"
+        id="startInput"
+        placeholder="Startpreis (€)"
+        step="0.01"
+        min="0"
+        required
+      />
+      <input
+        type="number"
+        id="minInput"
+        placeholder="Minimalpreis (€)"
+        step="0.01"
+        min="0"
+        required
+      />
+      <input
+        type="number"
+        id="dropInput"
+        placeholder="Preisabfall pro Minute (€)"
+        step="0.01"
+        min="0"
+        required
+      />
+
+      <div style="display:flex; gap:0.5rem; margin-top: 0.5rem; justify-content:center;">
+        <input
+          type="number"
+          id="countdownMinutes"
+          placeholder="Minuten"
+          min="0"
+          max="59"
+          value="1"
+          required
+          title="Minuten bis zum nächsten Preisfall"
+        />
+        <input
+          type="number"
+          id="countdownSeconds"
+          placeholder="Sekunden"
+          min="0"
+          max="59"
+          value="0"
+          required
+          title="Sekunden bis zum nächsten Preisfall"
+        />
+      </div>
+
       <input type="file" id="imageInput" accept="image/*" />
       <button type="submit">Produkt hinzufügen</button>
     </form>
@@ -249,112 +470,253 @@
 
   <button id="createBtn">+</button>
 
+  <div class="notification-container"></div>
+
   <script>
+    // Notification System
+    class NotificationSystem {
+      constructor() {
+        this.container = document.querySelector('.notification-container');
+        this.queue = [];
+      }
+      show(message, type = 'success') {
+        const notification = this.createNotification(message, type);
+        this.queue.push(notification);
+        if (this.queue.length === 1) this.animate();
+      }
+      createNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = 'notification ' + type;
+        notification.innerHTML = `
+          <div class="notification-icon">${this.getIcon(type)}</div>
+          <div class="notification-content">${message}</div>
+          <div class="progress-bar">
+            <div class="progress"></div>
+          </div>
+        `;
+        notification.addEventListener('click', () => this.dismiss(notification));
+        notification.timestamp = Date.now();
+        return notification;
+      }
+      getIcon(type) {
+        const icons = {
+          alert: '<i class="fas fa-fire"></i>',
+          info: '<i class="fas fa-info-circle"></i>',
+          success: '<i class="fas fa-check-circle"></i>',
+          warning: '<i class="fas fa-exclamation-triangle"></i>',
+          ai: '<i class="fas fa-bolt"></i>',
+        };
+        return icons[type] || '';
+      }
+      animate() {
+        const notification = this.queue[0];
+        this.container.appendChild(notification);
+        requestAnimationFrame(() => {
+          notification.classList.add('active');
+        });
+        const dismissTimer = setTimeout(() => {
+          this.dismiss(notification);
+        }, 5000);
+        notification.addEventListener('mouseenter', () => {
+          clearTimeout(dismissTimer);
+        });
+        notification.addEventListener('mouseleave', () => {
+          if (!notification.classList.contains('exit')) {
+            this.dismiss(notification, 5000 - (Date.now() - notification.timestamp));
+          }
+        });
+      }
+      dismiss(notification, delay = 500) {
+        if (!notification) return;
+        notification.classList.remove('active');
+        notification.classList.add('exit');
+        setTimeout(() => {
+          notification.remove();
+          this.queue.shift();
+          if (this.queue.length > 0) this.animate();
+        }, delay);
+      }
+    }
+
+    const notifier = new NotificationSystem();
+
+    // Produktmanagement
     const container = document.getElementById('productContainer');
+    const createBtn = document.getElementById('createBtn');
     const modal = document.getElementById('uploadModal');
     const form = document.getElementById('uploadForm');
-    const createBtn = document.getElementById('createBtn');
 
-    createBtn.onclick = () => modal.style.display = 'flex';
+    createBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
 
-    form.onsubmit = e => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const title = document.getElementById('titleInput').value;
+
+      const title = document.getElementById('titleInput').value.trim();
       const start = parseFloat(document.getElementById('startInput').value);
       const min = parseFloat(document.getElementById('minInput').value);
       const drop = parseFloat(document.getElementById('dropInput').value);
+      const countdownMin = parseInt(document.getElementById('countdownMinutes').value, 10);
+      const countdownSec = parseInt(document.getElementById('countdownSeconds').value, 10);
       const image = document.getElementById('imageInput').files[0];
+
+      if (
+        !title ||
+        isNaN(start) ||
+        isNaN(min) ||
+        isNaN(drop) ||
+        isNaN(countdownMin) ||
+        isNaN(countdownSec) ||
+        countdownMin < 0 ||
+        countdownSec < 0 ||
+        countdownSec > 59 ||
+        countdownMin > 59
+      ) {
+        alert('Bitte alle Felder korrekt ausfüllen und gültige Zeiten angeben!');
+        return;
+      }
+
+      const countdownInterval = countdownMin * 60 + countdownSec;
+      if (countdownInterval <= 0) {
+        alert('Countdown muss größer als 0 sein!');
+        return;
+      }
+
       const reader = new FileReader();
 
-      reader.onloadend = () => {
+      reader.onload = function (event) {
+        addProduct({
+          title,
+          start,
+          min,
+          drop,
+          countdownInterval,
+          imageSrc: event.target.result || '',
+        });
         modal.style.display = 'none';
         form.reset();
-        createProductCard({ title, startPrice: start, minPrice: min, dropPerMinute: drop, imageSrc: reader.result }, Date.now());
       };
 
-      if (image) {
-        reader.readAsDataURL(image);
-      } else {
-        createProductCard({ title, startPrice: start, minPrice: min, dropPerMinute: drop }, Date.now());
+      if (image) reader.readAsDataURL(image);
+      else {
+        addProduct({ title, start, min, drop, countdownInterval, imageSrc: '' });
         modal.style.display = 'none';
         form.reset();
       }
-    };
+    });
 
-    function animateDigits(element, newValue) {
-      const oldText = element.textContent;
-      const newText = newValue.toString();
-      let result = '';
-      for (let i = 0; i < newText.length; i++) {
-        const oldChar = oldText[i] || '';
-        const newChar = newText[i];
-        if (oldChar !== newChar) {
-          result += `<span class="digit-anim">${newChar}</span>`;
-        } else {
-          result += newChar;
+    function addProduct({ title, start, min, drop, countdownInterval, imageSrc }) {
+      const product = document.createElement('div');
+      product.className = 'product-card';
+
+      let currentPrice = start;
+      const startTime = Date.now();
+
+      const priceEl = document.createElement('div');
+      priceEl.className = 'price';
+
+      const timerEl = document.createElement('div');
+      timerEl.className = 'timer';
+
+      const btn = document.createElement('button');
+      btn.className = 'buy-btn';
+      btn.innerHTML = '<span>Kaufen</span>';
+
+      let loadingTimeout;
+
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('sold') || btn.classList.contains('loading'))
+          return;
+        btn.classList.add('loading');
+        clearTimeout(loadingTimeout);
+
+        loadingTimeout = setTimeout(() => {
+          btn.classList.remove('loading');
+          btn.classList.add('sold');
+          btn.disabled = true;
+          notifier.show(`Danke für deinen Kauf von "${title}"! 🎉`, 'success');
+        }, 1500);
+      });
+
+      // Aktualisiere die Funktion update() so:
+function update() {
+  const elapsed = (Date.now() - startTime) / 1000; // Sekunden seit Start
+  const dropInterval = countdownInterval;
+
+  // Wie viele Drops sind schon passiert?
+  const dropsOccurred = Math.floor(elapsed / dropInterval);
+  const newPrice = Math.max(min, (start - drop * dropsOccurred).toFixed(2));
+  if (newPrice != currentPrice) {
+    animateDigits(priceEl, parseFloat(newPrice));
+    currentPrice = newPrice;
+  }
+
+  // Countdown bis nächster Drop
+  const timeToNextDrop = dropInterval - (elapsed % dropInterval);
+  const minutes = Math.floor(timeToNextDrop / 60);
+  const seconds = Math.floor(timeToNextDrop % 60);
+
+  // Animierte Ausgabe
+  animateCountdown(timerEl, minutes, seconds);
+
+  if (!btn.classList.contains('sold')) {
+    requestAnimationFrame(update);
+  }
+}
+
+// Neue Funktion für animierte Countdown-Ziffern
+function animateCountdown(element, minutes, seconds) {
+  const text = `Nächster Preis fällt in `;
+  // Zerlege Minuten und Sekunden in einzelne Zeichen inklusive :
+  const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+  element.innerHTML = ''; // Reset
+
+  // Erster statischer Text
+  const staticSpan = document.createElement('span');
+  staticSpan.textContent = text;
+  element.appendChild(staticSpan);
+
+  // Animierte Ziffern
+  for (const char of timeStr) {
+    const span = document.createElement('span');
+    span.className = 'digit-anim';
+    span.textContent = char;
+    element.appendChild(span);
+  }
+}
+
+
+      function animateDigits(element, newPrice) {
+        element.innerHTML = '';
+        const priceStr = newPrice.toFixed(2);
+        for (const char of priceStr) {
+          const span = document.createElement('span');
+          span.className = 'digit-anim';
+          span.textContent = char;
+          element.appendChild(span);
         }
       }
-      element.innerHTML = result;
-    }
 
-    function createProductCard(product, id) {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        ${product.imageSrc ? `<img src="${product.imageSrc}" style="width:100%;border-radius:var(--radius);margin-bottom:1rem;" />` : ''}
-        <div class="product-title">${product.title}</div>
-        <div class="price" id="price-${id}">Startpreis: <span class="value">${product.startPrice.toFixed(2)}€</span></div>
-        <div class="timer" id="timer-${id}">Letztes Update in: <span class="count" id="countdown-${id}">60</span>s</div>
-        <button class="buy-btn" id="btn-${id}" onclick="buyProduct(${id})"><span>Jetzt kaufen</span></button>
-      `;
-      container.appendChild(card);
+      if (imageSrc) {
+        const img = document.createElement('img');
+        img.src = imageSrc;
+        img.alt = title;
+        product.appendChild(img);
+      }
+      const titleEl = document.createElement('div');
+      titleEl.className = 'product-title';
+      titleEl.textContent = title;
 
-      let price = product.startPrice;
-      const dropPerMinute = product.dropPerMinute || 0.05;
-      let seconds = 60;
-      const priceValueEl = card.querySelector('.price .value');
-      const countdownEl = card.querySelector('.timer .count');
+      product.appendChild(titleEl);
+      product.appendChild(priceEl);
+      product.appendChild(timerEl);
+      product.appendChild(btn);
 
-      const timer = setInterval(() => {
-        seconds--;
-        animateDigits(countdownEl, seconds);
+      container.appendChild(product);
 
-        if (seconds <= 0) {
-          seconds = 60;
-          if (price > product.minPrice) {
-            price -= dropPerMinute;
-            price = Math.max(price, product.minPrice);
-            animateDigits(priceValueEl, price.toFixed(2) + '€');
-          }
-        }
-      }, 1000);
-
-      card.dataset.timer = timer;
-    }
-
-    function buyProduct(id) {
-      const btn = document.getElementById(`btn-${id}`);
-      const priceEl = document.getElementById(`price-${id}`);
-      const timerEl = document.getElementById(`timer-${id}`);
-      const card = btn.closest('.product-card');
-      const timer = parseInt(card.dataset.timer);
-
-      btn.classList.add('loading');
-      btn.disabled = true;
-
-      setTimeout(() => {
-        clearInterval(timer);
-        btn.classList.remove('loading');
-        btn.innerHTML = '<span>Verkauft</span>';
-
-        const priceText = priceEl.textContent.match(/\d+(\.\d{1,2})?/);
-        const finalPrice = priceText ? priceText[0] : '???';
-
-        priceEl.innerHTML = `Verkauft für <span class='value'>${finalPrice}€</span>`;
-        timerEl.style.display = 'none';
-
-        alert(`Du hast '${card.querySelector('.product-title').textContent}' für ${finalPrice}€ gekauft!`);
-      }, 1500);
+      update();
     }
   </script>
 </body>
