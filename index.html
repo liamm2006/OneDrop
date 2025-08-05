@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneDrop Marketplace</title>
+  <style>
+    :root {
+      --main: #00ffcc;
+      --dark: #0f0f0f;
+      --bg: #1a1a1a;
+      --radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--dark);
+      color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 2rem 1rem;
+      background: #111;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      animation: pulseText 3s infinite ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @keyframes pulseText {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--main);
+      border-radius: 50%;
+      animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .product-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 2rem;
+      width: 300px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.8s ease forwards;
+      position: relative;
+    }
+
+    .product-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .price, .timer {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+      height: 1.5rem;
+      overflow: hidden;
+    }
+
+    .digit-anim {
+      display: inline-block;
+      animation: digitSlide 0.4s ease;
+    }
+
+    @keyframes digitSlide {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .buy-btn {
+      padding: 0.8rem 1.2rem;
+      background: var(--main);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    .buy-btn:disabled {
+      background: #888;
+    }
+
+    .buy-btn.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating Create Button */
+    #createBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--main);
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      cursor: pointer;
+      animation: bounce 2s infinite;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    #uploadModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      display: none;
+    }
+
+    #uploadForm {
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 300px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    #uploadForm input, #uploadForm button {
+      padding: 0.7rem;
+      border: none;
+      border-radius: var(--radius);
+    }
+
+    #uploadForm input {
+      background: #333;
+      color: white;
+    }
+
+    #uploadForm button {
+      background: var(--main);
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"></div>
+    <div>OneDrop – Schnapp es dir, bevor es jemand anders tut</div>
+  </header>
+
+  <div class="products" id="productContainer"></div>
+
+  <div id="uploadModal">
+    <form id="uploadForm">
+      <input type="text" id="titleInput" placeholder="Produktname" required />
+      <input type="number" id="startInput" placeholder="Startpreis (€)" required />
+      <input type="number" id="minInput" placeholder="Minimalpreis (€)" required />
+      <button type="submit">Produkt hinzufügen</button>
+    </form>
+  </div>
+
+  <button id="createBtn">+</button>
+
+  <script>
+    const container = document.getElementById('productContainer');
+    const modal = document.getElementById('uploadModal');
+    const form = document.getElementById('uploadForm');
+    const createBtn = document.getElementById('createBtn');
+
+    createBtn.onclick = () => modal.style.display = 'flex';
+    form.onsubmit = e => {
+      e.preventDefault();
+      const title = document.getElementById('titleInput').value;
+      const start = parseFloat(document.getElementById('startInput').value);
+      const min = parseFloat(document.getElementById('minInput').value);
+      modal.style.display = 'none';
+      form.reset();
+      createProductCard({ title, startPrice: start, minPrice: min }, Date.now());
+    };
+
+    function animateDigits(element, newValue) {
+      const oldText = element.textContent;
+      const newText = newValue.toString();
+      let result = '';
+      for (let i = 0; i < newText.length; i++) {
+        const oldChar = oldText[i] || '';
+        const newChar = newText[i];
+        if (oldChar !== newChar) {
+          result += `<span class="digit-anim">${newChar}</span>`;
+        } else {
+          result += newChar;
+        }
+      }
+      element.innerHTML = result;
+    }
+
+    function createProductCard(product, id) {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="product-title">${product.title}</div>
+        <div class="price" id="price-${id}">Startpreis: <span class="value">${product.startPrice.toFixed(2)}€</span></div>
+        <div class="timer" id="timer-${id}">Letztes Update in: <span class="count" id="countdown-${id}">60</span>s</div>
+        <button class="buy-btn" id="btn-${id}" onclick="buyProduct(${id})">Jetzt kaufen</button>
+      `;
+      container.appendChild(card);
+
+      let price = product.startPrice;
+      const dropPerMinute = 0.05;
+      let seconds = 60;
+      const priceValueEl = card.querySelector('.price .value');
+      const countdownEl = card.querySelector('.timer .count');
+
+      const timer = setInterval(() => {
+        seconds--;
+        animateDigits(countdownEl, seconds);
+
+        if (seconds <= 0) {
+          seconds = 60;
+          if (price > product.minPrice) {
+            price -= dropPerMinute;
+            price = Math.max(price, product.minPrice);
+            animateDigits(priceValueEl, price.toFixed(2) + '€');
+          }
+        }
+      }, 1000);
+
+      card.dataset.timer = timer;
+    }
+
+    function buyProduct(id) {
+      const btn = document.getElementById(`btn-${id}`);
+      const priceEl = document.getElementById(`price-${id}`);
+      const timerEl = document.getElementById(`timer-${id}`);
+      const card = btn.closest('.product-card');
+      const timer = parseInt(card.dataset.timer);
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.innerText = '';
+
+      setTimeout(() => {
+        clearInterval(timer);
+        btn.classList.remove('loading');
+        btn.innerText = 'Verkauft';
+
+        const priceText = priceEl.textContent.match(/\d+(\.\d{1,2})?/);
+        const finalPrice = priceText ? priceText[0] : '???';
+
+        priceEl.innerHTML = `Verkauft für <span class='value'>${finalPrice}€</span>`;
+        timerEl.style.display = 'none';
+
+        alert(`Du hast '${card.querySelector('.product-title').textContent}' für ${finalPrice}€ gekauft!`);
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
