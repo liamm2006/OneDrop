@@ -26,6 +26,10 @@
       --danger: #ff6b6b;
       --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
       --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --category-electronics: #ff6b6b;
+      --category-clothing: #4dabf7;
+      --category-bike: #40c057;
+      --category-other: #cc5de8;
     }
 
     * {
@@ -90,11 +94,44 @@
       color: var(--main);
     }
 
+    .categories {
+      display: flex;
+      gap: 0.8rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 1400px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .category-btn {
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      background: var(--bg);
+      border: none;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .category-btn.active {
+      background: var(--main);
+      color: #000;
+    }
+
+    .category-btn i {
+      font-size: 1.1rem;
+    }
+
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       justify-content: center;
-      margin-top: 2.5rem;
+      margin-top: 0.5rem;
       width: 100%;
       max-width: 1400px;
       padding: 1rem;
@@ -114,6 +151,7 @@
       height: 100%;
       transition: var(--transition);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      cursor: pointer;
     }
 
     .product-card:hover {
@@ -358,7 +396,7 @@
       50% { transform: translateY(-12px); }
     }
 
-    #uploadModal {
+    #uploadModal, #productModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -371,9 +409,11 @@
       z-index: 10;
       display: none;
       backdrop-filter: blur(8px);
+      overflow-y: auto;
+      padding: 2rem 0;
     }
 
-    #uploadForm {
+    #uploadForm, #productDetails {
       background: var(--bg);
       padding: 2.5rem;
       border-radius: var(--radius);
@@ -381,7 +421,7 @@
       flex-direction: column;
       gap: 1.2rem;
       width: 90%;
-      max-width: 500px;
+      max-width: 800px;
       animation: modalIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
@@ -399,7 +439,7 @@
       }
     }
 
-    .form-title {
+    .form-title, .product-modal-title {
       text-align: center;
       font-size: 1.8rem;
       margin-bottom: 1rem;
@@ -428,7 +468,7 @@
       color: var(--main);
     }
 
-    #uploadForm input, #uploadForm button, #uploadForm textarea {
+    #uploadForm input, #uploadForm button, #uploadForm textarea, #uploadForm select {
       padding: 1rem;
       border: none;
       border-radius: var(--radius-sm);
@@ -438,12 +478,12 @@
       transition: var(--transition);
     }
 
-    #uploadForm input:focus, #uploadForm textarea:focus {
+    #uploadForm input:focus, #uploadForm textarea:focus, #uploadForm select:focus {
       outline: 2px solid var(--main);
       background: #2a2a2a;
     }
 
-    #uploadForm button {
+    #uploadForm button, #productDetails button {
       background: var(--main);
       color: #000;
       cursor: pointer;
@@ -455,7 +495,7 @@
       box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
     }
 
-    #uploadForm button:hover {
+    #uploadForm button:hover, #productDetails button:hover {
       background: var(--main-dark);
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(0, 255, 204, 0.4);
@@ -591,6 +631,116 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Product Details Modal */
+    .product-detail-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .product-detail-images {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-main-image {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: #151515;
+      margin-bottom: 1rem;
+    }
+
+    .product-thumbnails {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .product-thumbnail {
+      width: 80px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .product-thumbnail:hover, .product-thumbnail.active {
+      opacity: 1;
+      border-color: var(--main);
+    }
+
+    .product-detail-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .product-detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .product-detail-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .product-detail-value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .product-description {
+      margin-top: 1rem;
+      line-height: 1.7;
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .category-electronics {
+      background: rgba(255, 107, 107, 0.2);
+      color: var(--category-electronics);
+    }
+
+    .category-clothing {
+      background: rgba(77, 171, 247, 0.2);
+      color: var(--category-clothing);
+    }
+
+    .category-bike {
+      background: rgba(64, 192, 87, 0.2);
+      color: var(--category-bike);
+    }
+
+    .category-other {
+      background: rgba(204, 93, 232, 0.2);
+      color: var(--category-other);
+    }
+
+    .condition-badge {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: rgba(0, 255, 204, 0.2);
+      color: var(--main);
+    }
+
     @media (max-width: 768px) {
       .products {
         grid-template-columns: 1fr;
@@ -603,12 +753,22 @@
         gap: 0.8rem;
       }
       
-      #uploadForm {
+      #uploadForm, #productDetails {
         padding: 1.8rem;
       }
       
       .preview-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .product-detail-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .categories {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 1rem 0.5rem;
       }
     }
   </style>
@@ -618,6 +778,24 @@
     <div class="logo"><i class="fas fa-gem"></i></div>
     <div>OneDrop – Schnapp es dir, bevor es jemand anders tut</div>
   </header>
+
+  <div class="categories" id="categoriesContainer">
+    <button class="category-btn active" data-category="all">
+      <i class="fas fa-th"></i> Alle
+    </button>
+    <button class="category-btn" data-category="electronics">
+      <i class="fas fa-laptop"></i> Elektronik
+    </button>
+    <button class="category-btn" data-category="clothing">
+      <i class="fas fa-tshirt"></i> Kleidung
+    </button>
+    <button class="category-btn" data-category="bike">
+      <i class="fas fa-bicycle"></i> Fahrrad
+    </button>
+    <button class="category-btn" data-category="other">
+      <i class="fas fa-box"></i> Sonstiges
+    </button>
+  </div>
 
   <div class="products" id="productContainer"></div>
 
@@ -629,6 +807,11 @@
       <div class="form-group">
         <label for="titleInput"><i class="fas fa-tag"></i> Produktname</label>
         <input type="text" id="titleInput" placeholder="Premium Smartwatch" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="descriptionInput"><i class="fas fa-align-left"></i> Beschreibung</label>
+        <textarea id="descriptionInput" placeholder="Ausführliche Produktbeschreibung..." rows="3"></textarea>
       </div>
       
       <div class="input-row">
@@ -655,6 +838,36 @@
         </div>
       </div>
       
+      <div class="input-row">
+        <div class="form-group">
+          <label for="categoryInput"><i class="fas fa-folder"></i> Kategorie</label>
+          <select id="categoryInput" required>
+            <option value="">Bitte wählen</option>
+            <option value="electronics">Elektronik</option>
+            <option value="clothing">Kleidung</option>
+            <option value="bike">Fahrrad</option>
+            <option value="other">Sonstiges</option>
+          </select>
+        </div>
+        
+        <div class="form-group" id="conditionGroup">
+          <label for="conditionInput"><i class="fas fa-star"></i> Zustand</label>
+          <select id="conditionInput" required>
+            <option value="">Bitte Kategorie wählen</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group" id="sizeGroup" style="display: none;">
+        <label for="sizeInput"><i class="fas fa-ruler"></i> Größe</label>
+        <input type="text" id="sizeInput" placeholder="Größe (z.B. M, 42, 10.5)" />
+      </div>
+      
+      <div class="form-group" id="modelGroup" style="display: none;">
+        <label for="modelInput"><i class="fas fa-microchip"></i> Modell</label>
+        <input type="text" id="modelInput" placeholder="Modellbezeichnung" />
+      </div>
+      
       <div class="form-group">
         <label><i class="fas fa-images"></i> Produktbilder</label>
         <div class="file-upload" id="fileUploadArea">
@@ -672,6 +885,13 @@
       
       <button type="submit"><i class="fas fa-plus-circle"></i> Produkt hinzufügen</button>
     </form>
+  </div>
+
+  <div id="productModal">
+    <button class="close-modal" aria-label="Modal schließen">&times;</button>
+    <div id="productDetails">
+      <!-- Content will be filled by JavaScript -->
+    </div>
   </div>
 
   <button id="createBtn" aria-label="Neues Produkt erstellen">+</button>
@@ -747,35 +967,132 @@
       }, 5000);
     }
 
+    // Kategorie- und Zustandsdaten
+    const categories = {
+      electronics: {
+        name: "Elektronik",
+        conditions: ["Neu", "Gebraucht", "Refurbished", "Defekt"],
+        color: "var(--category-electronics)"
+      },
+      clothing: {
+        name: "Kleidung",
+        conditions: ["Neu mit Etikett", "Neu ohne Etikett", "Sehr gut", "Gut", "Akzeptabel"],
+        color: "var(--category-clothing)"
+      },
+      bike: {
+        name: "Fahrrad",
+        conditions: ["Neu", "Gebraucht", "Restauriert", "Vintage"],
+        color: "var(--category-bike)"
+      },
+      other: {
+        name: "Sonstiges",
+        conditions: ["Neu", "Gebraucht", "Antik", "Sammlerstück"],
+        color: "var(--category-other)"
+      }
+    };
+
     // Produktmanagement
     const container = document.getElementById('productContainer');
+    const categoriesContainer = document.getElementById('categoriesContainer');
     const createBtn = document.getElementById('createBtn');
-    const modal = document.getElementById('uploadModal');
-    const form = document.getElementById('uploadForm');
-    const closeModal = document.querySelector('.close-modal');
+    const uploadModal = document.getElementById('uploadModal');
+    const productModal = document.getElementById('productModal');
+    const uploadForm = document.getElementById('uploadForm');
+    const closeModals = document.querySelectorAll('.close-modal');
     const fileUploadArea = document.getElementById('fileUploadArea');
     const imageInput = document.getElementById('imageInput');
     const previewContainer = document.getElementById('previewContainer');
     const previewGrid = document.getElementById('previewGrid');
+    const categoryInput = document.getElementById('categoryInput');
+    const conditionInput = document.getElementById('conditionInput');
+    const sizeGroup = document.getElementById('sizeGroup');
+    const modelGroup = document.getElementById('modelGroup');
     let uploadedImages = [];
+    let products = [];
+    let currentCategory = 'all';
+
+    // Kategorie-Filter
+    categoriesContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('category-btn')) {
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        e.target.classList.add('active');
+        currentCategory = e.target.dataset.category;
+        filterProducts();
+      }
+    });
+
+    function filterProducts() {
+      container.innerHTML = '';
+      
+      const filtered = currentCategory === 'all' 
+        ? products 
+        : products.filter(p => p.category === currentCategory);
+      
+      filtered.forEach(product => {
+        createProductCard(product);
+      });
+    }
+
+    // Kategorie-Änderung
+    categoryInput.addEventListener('change', () => {
+      const category = categoryInput.value;
+      conditionInput.innerHTML = '<option value="">Bitte wählen</option>';
+      
+      if (category && categories[category]) {
+        categories[category].conditions.forEach(condition => {
+          const option = document.createElement('option');
+          option.value = condition;
+          option.textContent = condition;
+          conditionInput.appendChild(option);
+        });
+        
+        // Kategorie-spezifische Felder anzeigen
+        if (category === 'clothing') {
+          sizeGroup.style.display = 'flex';
+          modelGroup.style.display = 'none';
+        } else if (category === 'electronics') {
+          sizeGroup.style.display = 'none';
+          modelGroup.style.display = 'flex';
+        } else {
+          sizeGroup.style.display = 'none';
+          modelGroup.style.display = 'none';
+        }
+      } else {
+        conditionInput.innerHTML = '<option value="">Bitte Kategorie wählen</option>';
+        sizeGroup.style.display = 'none';
+        modelGroup.style.display = 'none';
+      }
+    });
 
     // Modal Handling
     createBtn.addEventListener('click', () => {
-      modal.style.display = 'flex';
+      uploadModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     });
 
-    closeModal.addEventListener('click', () => {
-      modal.style.display = 'none';
-      document.body.style.overflow = '';
-      resetForm();
-    });
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
+    closeModals.forEach(btn => {
+      btn.addEventListener('click', () => {
+        uploadModal.style.display = 'none';
+        productModal.style.display = 'none';
         document.body.style.overflow = '';
         resetForm();
+      });
+    });
+
+    uploadModal.addEventListener('click', (e) => {
+      if (e.target === uploadModal) {
+        uploadModal.style.display = 'none';
+        document.body.style.overflow = '';
+        resetForm();
+      }
+    });
+
+    productModal.addEventListener('click', (e) => {
+      if (e.target === productModal) {
+        productModal.style.display = 'none';
+        document.body.style.overflow = '';
       }
     });
 
@@ -859,23 +1176,31 @@
     }
 
     function resetForm() {
-      form.reset();
+      uploadForm.reset();
       uploadedImages = [];
       updatePreview();
+      sizeGroup.style.display = 'none';
+      modelGroup.style.display = 'none';
+      conditionInput.innerHTML = '<option value="">Bitte Kategorie wählen</option>';
     }
 
     // Formular Handling
-    form.addEventListener('submit', (e) => {
+    uploadForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const title = document.getElementById('titleInput').value.trim();
+      const description = document.getElementById('descriptionInput').value.trim();
       const start = parseFloat(document.getElementById('startInput').value);
       const min = parseFloat(document.getElementById('minInput').value);
       const drop = parseFloat(document.getElementById('dropInput').value);
       const timer = parseInt(document.getElementById('timerInput').value, 10);
+      const category = document.getElementById('categoryInput').value;
+      const condition = document.getElementById('conditionInput').value;
+      const size = document.getElementById('sizeInput')?.value || '';
+      const model = document.getElementById('modelInput')?.value || '';
 
       // Validierung
-      if (!title || isNaN(start) || isNaN(min) || isNaN(drop) || isNaN(timer)) {
+      if (!title || isNaN(start) || isNaN(min) || isNaN(drop) || isNaN(timer) || !category || !condition) {
         alert('Bitte alle Felder korrekt ausfüllen!');
         return;
       }
@@ -891,33 +1216,48 @@
       }
 
       // Produkt erstellen
-      addProduct({
+      const productData = {
         title,
+        description,
         start,
         min,
         drop,
         timer,
-        images: [...uploadedImages]
-      });
+        category,
+        condition,
+        size,
+        model,
+        images: [...uploadedImages],
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString()
+      };
+      
+      addProduct(productData);
       
       // Erfolgsanimation
       createConfetti();
       
       // Modal schließen und zurücksetzen
       setTimeout(() => {
-        modal.style.display = 'none';
+        uploadModal.style.display = 'none';
         document.body.style.overflow = '';
         resetForm();
       }, 1000);
     });
 
     // Produkt erstellen
-    function addProduct({ title, start, min, drop, timer, images }) {
+    function addProduct(productData) {
+      products.push(productData);
+      createProductCard(productData);
+    }
+
+    function createProductCard(productData) {
       const product = document.createElement('div');
       product.className = 'product-card';
-      product.dataset.title = title;
+      product.dataset.id = productData.id;
+      product.dataset.category = productData.category;
 
-      let currentPrice = start;
+      let currentPrice = productData.start;
       const startTime = Date.now();
       let currentImageIndex = 0;
 
@@ -927,11 +1267,11 @@
       
       const mainImage = document.createElement('img');
       mainImage.className = 'main-image';
-      mainImage.alt = title;
+      mainImage.alt = productData.title;
       
       // Wenn Bilder vorhanden, erstes anzeigen
-      if (images.length > 0) {
-        mainImage.src = images[0];
+      if (productData.images.length > 0) {
+        mainImage.src = productData.images[0];
       } else {
         // Platzhalter, wenn keine Bilder
         mainImage.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>';
@@ -940,22 +1280,23 @@
       imagesContainer.appendChild(mainImage);
       
       // Miniaturansichten
-      if (images.length > 1) {
+      if (productData.images.length > 1) {
         const thumbnails = document.createElement('div');
         thumbnails.className = 'thumbnails';
         
-        images.forEach((img, index) => {
+        productData.images.forEach((img, index) => {
           const thumb = document.createElement('img');
           thumb.className = `thumbnail ${index === 0 ? 'active' : ''}`;
           thumb.src = img;
           thumb.alt = `Thumbnail ${index + 1}`;
           thumb.dataset.index = index;
           
-          thumb.addEventListener('click', () => {
+          thumb.addEventListener('click', (e) => {
             mainImage.src = img;
             document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
             thumb.classList.add('active');
             currentImageIndex = index;
+            e.stopPropagation();
           });
           
           thumbnails.appendChild(thumb);
@@ -969,8 +1310,14 @@
       // Titel
       const titleEl = document.createElement('div');
       titleEl.className = 'product-title';
-      titleEl.innerHTML = `<i class="fas fa-cube"></i>${title}`;
+      titleEl.innerHTML = `<i class="fas fa-cube"></i>${productData.title}`;
       product.appendChild(titleEl);
+      
+      // Kategorie-Badge
+      const categoryEl = document.createElement('div');
+      categoryEl.className = `category-badge category-${productData.category}`;
+      categoryEl.textContent = categories[productData.category]?.name || 'Sonstiges';
+      titleEl.appendChild(categoryEl);
       
       // Preis
       const priceContainer = document.createElement('div');
@@ -978,7 +1325,7 @@
       priceContainer.innerHTML = `
         <i class="fas fa-tag"></i>
         <div class="price">
-          <span class="value" id="priceValue">€${start.toFixed(2)}</span>
+          <span class="value" id="priceValue">€${productData.start.toFixed(2)}</span>
         </div>
       `;
       product.appendChild(priceContainer);
@@ -990,18 +1337,24 @@
       timerContainer.innerHTML = `
         <i class="fas fa-clock"></i>
         <div class="timer">
-          <span class="value" id="timerValue">${timer}:00</span>
+          <span class="value" id="timerValue">${productData.timer}:00</span>
         </div>
       `;
       product.appendChild(timerContainer);
       const timerValue = timerContainer.querySelector('.value');
+      
+      // Zustand
+      const conditionEl = document.createElement('div');
+      conditionEl.className = 'condition-badge';
+      conditionEl.textContent = productData.condition;
+      timerContainer.appendChild(conditionEl);
       
       // Kaufen-Button
       const btn = document.createElement('button');
       btn.className = 'buy-btn';
       btn.innerHTML = '<i class="fas fa-shopping-cart"></i><span>Jetzt kaufen</span>';
       
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
         if (btn.classList.contains('sold')) return;
         
         btn.classList.add('loading');
@@ -1010,22 +1363,29 @@
           btn.classList.remove('loading');
           btn.classList.add('sold');
           btn.innerHTML = '<i class="fas fa-check"></i><span>Verkauft!</span>';
-          alert(`Danke für deinen Kauf von "${title}" für €${currentPrice.toFixed(2)}!`);
+          alert(`Danke für deinen Kauf von "${productData.title}" für €${currentPrice.toFixed(2)}!`);
+          e.stopPropagation();
         }, 2000);
       });
       
       product.appendChild(btn);
       
+      // Produktkarte anklickbar machen
+      product.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+        showProductDetails(productData);
+      });
+      
       // Produkt hinzufügen
-      container.prepend(product);
+      container.appendChild(product);
       
       // Timer-Logik
       function updateProduct() {
         if (btn.classList.contains('sold')) return;
         
         const elapsed = (Date.now() - startTime) / 1000;
-        const dropsOccurred = Math.floor(elapsed / (timer * 60));
-        const newPrice = Math.max(min, start - drop * dropsOccurred);
+        const dropsOccurred = Math.floor(elapsed / (productData.timer * 60));
+        const newPrice = Math.max(productData.min, productData.start - productData.drop * dropsOccurred);
         
         // Preis aktualisieren
         if (Math.abs(newPrice - currentPrice) >= 0.01) {
@@ -1034,7 +1394,7 @@
         }
         
         // Timer aktualisieren
-        const timeToNextDrop = (timer * 60) - (elapsed % (timer * 60));
+        const timeToNextDrop = (productData.timer * 60) - (elapsed % (productData.timer * 60));
         const minutes = Math.floor(timeToNextDrop / 60);
         const seconds = Math.floor(timeToNextDrop % 60);
         
@@ -1047,6 +1407,178 @@
       updateProduct();
     }
 
+    // Produktdetails anzeigen
+    function showProductDetails(productData) {
+      const modalBody = document.getElementById('productDetails');
+      
+      modalBody.innerHTML = `
+        <h2 class="product-modal-title">
+          <i class="fas fa-info-circle"></i> ${productData.title}
+          <span class="category-badge category-${productData.category}">
+            ${categories[productData.category]?.name || 'Sonstiges'}
+          </span>
+        </h2>
+        
+        <div class="product-detail-content">
+          <div class="product-detail-images">
+            <img src="${productData.images.length > 0 ? productData.images[0] : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>'}" 
+                 alt="${productData.title}" class="product-main-image" id="detailMainImage">
+            
+            ${productData.images.length > 1 ? `
+              <div class="product-thumbnails">
+                ${productData.images.map((img, index) => `
+                  <img src="${img}" 
+                       class="product-thumbnail ${index === 0 ? 'active' : ''}" 
+                       alt="Thumbnail ${index + 1}"
+                       data-index="${index}">
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+          
+          <div class="product-detail-info">
+            <div class="product-detail-row">
+              <div class="product-detail-label">Aktueller Preis:</div>
+              <div class="product-detail-value" id="detailPrice">€${productData.start.toFixed(2)}</div>
+            </div>
+            
+            <div class="product-detail-row">
+              <div class="product-detail-label">Nächster Preisabfall in:</div>
+              <div class="product-detail-value" id="detailTimer">${productData.timer}:00</div>
+            </div>
+            
+            <div class="product-detail-row">
+              <div class="product-detail-label">Zustand:</div>
+              <div class="product-detail-value">
+                <span class="condition-badge">${productData.condition}</span>
+              </div>
+            </div>
+            
+            ${productData.size ? `
+              <div class="product-detail-row">
+                <div class="product-detail-label">Größe:</div>
+                <div class="product-detail-value">${productData.size}</div>
+              </div>
+            ` : ''}
+            
+            ${productData.model ? `
+              <div class="product-detail-row">
+                <div class="product-detail-label">Modell:</div>
+                <div class="product-detail-value">${productData.model}</div>
+              </div>
+            ` : ''}
+            
+            <div class="product-detail-row">
+              <div class="product-detail-label">Preisabfall:</div>
+              <div class="product-detail-value">€${productData.drop.toFixed(2)} pro Minute</div>
+            </div>
+            
+            <div class="product-detail-row">
+              <div class="product-detail-label">Minimalpreis:</div>
+              <div class="product-detail-value">€${productData.min.toFixed(2)}</div>
+            </div>
+            
+            ${productData.description ? `
+              <div class="product-description">
+                <h3><i class="fas fa-align-left"></i> Beschreibung</h3>
+                <p>${productData.description}</p>
+              </div>
+            ` : ''}
+            
+            <button class="buy-btn">
+              <i class="fas fa-shopping-cart"></i>
+              <span>Jetzt kaufen</span>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      // Thumbnail-Klick
+      if (productData.images.length > 1) {
+        document.querySelectorAll('.product-thumbnail').forEach(thumb => {
+          thumb.addEventListener('click', () => {
+            const index = thumb.dataset.index;
+            document.getElementById('detailMainImage').src = productData.images[index];
+            document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+          });
+        });
+      }
+      
+      // Kaufen-Button
+      document.querySelector('#productDetails .buy-btn').addEventListener('click', () => {
+        alert(`Danke für deinen Kauf von "${productData.title}"!`);
+      });
+      
+      productModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Beispielprodukte
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initiale Produkte
+      const sampleProducts = [
+        {
+          id: "1",
+          title: "Premium Kopfhörer",
+          description: "Kabellose Noise-Cancelling Kopfhörer mit 30h Akkulaufzeit",
+          start: 199.99,
+          min: 99.99,
+          drop: 10,
+          timer: 2,
+          category: "electronics",
+          condition: "Neu",
+          model: "SoundMax Pro X3",
+          images: [],
+          createdAt: "2023-10-15"
+        },
+        {
+          id: "2",
+          title: "Smart Watch Pro",
+          description: "Smartwatch mit Fitness-Tracking und Herzfrequenzmessung",
+          start: 249.99,
+          min: 149.99,
+          drop: 15,
+          timer: 3,
+          category: "electronics",
+          condition: "Refurbished",
+          model: "TechWatch 2023",
+          images: [],
+          createdAt: "2023-10-10"
+        },
+        {
+          id: "3",
+          title: "Designer Jeans",
+          description: "Premium Denim-Jeans im Slim Fit, waschbar bei 40°C",
+          start: 89.99,
+          min: 39.99,
+          drop: 5,
+          timer: 1,
+          category: "clothing",
+          condition: "Neu mit Etikett",
+          size: "32/32",
+          images: [],
+          createdAt: "2023-10-12"
+        },
+        {
+          id: "4",
+          title: "Mountainbike",
+          description: "Professionelles Mountainbike mit Federgabel und Scheibenbremsen",
+          start: 799.99,
+          min: 399.99,
+          drop: 20,
+          timer: 5,
+          category: "bike",
+          condition: "Gebraucht",
+          images: [],
+          createdAt: "2023-10-05"
+        }
+      ];
+      
+      sampleProducts.forEach(product => {
+        addProduct(product);
+      });
+    });
   </script>
 </body>
 </html>
