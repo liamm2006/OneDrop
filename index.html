@@ -36,6 +36,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -53,13 +54,12 @@
     }
 
     header {
-      padding: 1.2rem 1rem;
+      padding: 1rem;
       background: var(--dark);
       width: 100%;
       text-align: center;
-      font-size: clamp(1.1rem, 4vw, 1.6rem);
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      font-weight: 700;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -70,13 +70,13 @@
       z-index: 100;
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
-      background: rgba(15, 15, 15, 0.85);
+      background: rgba(15, 15, 15, 0.9);
     }
 
     .logo {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--main);
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--main);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -90,22 +90,28 @@
     }
 
     .logo i {
-      font-size: 1.2rem;
+      font-size: 1rem;
       color: var(--main);
     }
 
     .categories {
       display: flex;
-      gap: 0.8rem;
-      padding: 1rem;
+      gap: 0.6rem;
+      padding: 0.8rem;
       width: 100%;
       max-width: 1400px;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
     }
 
     .category-btn {
-      padding: 0.7rem 1.5rem;
+      padding: 0.6rem 1.2rem;
       border-radius: 50px;
       background: var(--bg);
       border: none;
@@ -116,6 +122,9 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      white-space: nowrap;
     }
 
     .category-btn.active {
@@ -124,26 +133,25 @@
     }
 
     .category-btn i {
-      font-size: 1.1rem;
+      font-size: 0.9rem;
     }
 
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       justify-content: center;
       margin-top: 0.5rem;
       width: 100%;
       max-width: 1400px;
       padding: 1rem;
-      gap: 2rem;
+      gap: 1.5rem;
     }
 
     .product-card {
       background: var(--bg);
       border-radius: var(--radius);
-      padding: 1.8rem;
+      padding: 1.5rem;
       box-shadow: var(--shadow);
-      animation: fadeIn 0.6s ease forwards;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -151,13 +159,11 @@
       height: 100%;
       transition: var(--transition);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      cursor: pointer;
     }
 
     .product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(0, 255, 204, 0.2);
-      border-color: rgba(0, 255, 204, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 255, 204, 0.2);
     }
 
     .product-card::before {
@@ -181,7 +187,7 @@
       position: relative;
       width: 100%;
       border-radius: var(--radius-sm);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       overflow: hidden;
       aspect-ratio: 16/9;
       background: #151515;
@@ -197,14 +203,14 @@
     .thumbnails {
       display: flex;
       gap: 0.5rem;
-      margin-top: 0.8rem;
+      margin-top: 0.6rem;
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .thumbnail {
-      width: 60px;
-      height: 40px;
+      width: 50px;
+      height: 35px;
       border-radius: 6px;
       object-fit: cover;
       cursor: pointer;
@@ -219,49 +225,44 @@
     }
 
     .product-title {
-      font-size: 1.4rem;
-      margin-bottom: 1.2rem;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
       text-align: center;
       font-weight: 700;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-    }
-
-    .product-title i {
-      color: var(--main);
-      font-size: 1.2rem;
     }
 
     .price-container, .timer-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.8rem;
-      margin: 0.8rem 0;
+      gap: 0.6rem;
+      margin: 0.6rem 0;
       width: 100%;
     }
 
     .price-container i, .timer-container i {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       color: var(--main);
-      width: 30px;
+      width: 25px;
       text-align: center;
     }
 
     .price, .timer {
-      font-size: 1.4rem;
-      height: 2rem;
+      font-size: 1.3rem;
+      height: 1.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       font-weight: 700;
       background: rgba(0, 0, 0, 0.3);
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: var(--radius-sm);
-      min-width: 140px;
+      min-width: 120px;
     }
 
     .price .value, .timer .value {
@@ -270,7 +271,7 @@
       align-items: center;
       justify-content: center;
       height: 100%;
-      min-width: 80px;
+      min-width: 70px;
     }
 
     .digit {
@@ -278,7 +279,7 @@
       height: 100%;
       position: relative;
       vertical-align: top;
-      width: 1em;
+      width: 0.8em;
       overflow: hidden;
     }
 
@@ -293,23 +294,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.2rem;
-      font-size: 1.1rem;
+      padding: 1rem;
+      font-size: 1rem;
       font-weight: 700;
       background: linear-gradient(135deg, var(--main), var(--main-dark));
       color: #000;
       border: none;
       border-radius: var(--radius);
-      box-shadow: 0 5px 15px rgba(0, 255, 204, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
       cursor: pointer;
-      margin-top: 1.5rem;
+      margin-top: 1.2rem;
       position: relative;
       transition: var(--transition);
       user-select: none;
       z-index: 1;
       overflow: hidden;
       width: 100%;
-      gap: 0.8rem;
+      gap: 0.6rem;
+      min-height: 56px;
     }
 
     .buy-btn::before {
@@ -325,7 +327,7 @@
 
     .buy-btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 255, 204, 0.5);
+      box-shadow: 0 6px 16px rgba(0, 255, 204, 0.5);
     }
 
     .buy-btn:hover::before {
@@ -342,8 +344,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border: 3px solid transparent;
       border-top: 3px solid #000;
       border-radius: 50%;
@@ -364,15 +366,15 @@
 
     #createBtn {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 20px;
+      right: 20px;
       background: var(--main);
       color: #000;
       border: none;
       border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
+      font-size: 2.2rem;
       cursor: pointer;
       animation: bounce 2s infinite;
       box-shadow: var(--shadow);
@@ -388,12 +390,12 @@
     #createBtn:hover {
       transform: scale(1.1) translateY(-5px);
       animation: none;
-      box-shadow: 0 8px 25px rgba(0, 255, 204, 0.6);
+      box-shadow: 0 8px 20px rgba(0, 255, 204, 0.6);
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+      50% { transform: translateY(-10px); }
     }
 
     #uploadModal, #productModal {
@@ -402,7 +404,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.92);
+      background: rgba(0, 0, 0, 0.95);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -410,28 +412,28 @@
       display: none;
       backdrop-filter: blur(8px);
       overflow-y: auto;
-      padding: 2rem 0;
+      padding: 1rem 0;
     }
 
     #uploadForm, #productDetails {
       background: var(--bg);
-      padding: 2.5rem;
+      padding: 1.8rem;
       border-radius: var(--radius);
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1rem;
       width: 90%;
       max-width: 800px;
-      animation: modalIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      animation: modalIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       position: relative;
     }
 
     @keyframes modalIn {
       from {
         opacity: 0;
-        transform: translateY(40px) scale(0.95);
+        transform: translateY(30px) scale(0.95);
       }
       to {
         opacity: 1;
@@ -441,19 +443,21 @@
 
     .form-title, .product-modal-title {
       text-align: center;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       margin-bottom: 1rem;
       color: var(--main);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.8rem;
+      gap: 0.6rem;
+      flex-wrap: wrap;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
     }
 
     .form-group label {
@@ -461,15 +465,17 @@
       align-items: center;
       gap: 0.5rem;
       color: var(--text-secondary);
+      font-size: 0.95rem;
     }
 
     .form-group label i {
-      width: 24px;
+      width: 22px;
       color: var(--main);
+      font-size: 0.9rem;
     }
 
     #uploadForm input, #uploadForm button, #uploadForm textarea, #uploadForm select {
-      padding: 1rem;
+      padding: 0.9rem;
       border: none;
       border-radius: var(--radius-sm);
       font-size: 1rem;
@@ -488,22 +494,22 @@
       color: #000;
       cursor: pointer;
       font-weight: 700;
-      margin-top: 1rem;
-      padding: 1.2rem;
-      font-size: 1.1rem;
+      margin-top: 0.5rem;
+      padding: 1rem;
+      font-size: 1rem;
       letter-spacing: 0.5px;
-      box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
     }
 
     #uploadForm button:hover, #productDetails button:hover {
       background: var(--main-dark);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0, 255, 204, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 255, 204, 0.4);
     }
 
     .input-row {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
     }
 
     .input-row .form-group {
@@ -515,7 +521,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1.5rem;
       border: 2px dashed rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-sm);
       cursor: pointer;
@@ -530,9 +536,9 @@
     }
 
     .file-upload i {
-      font-size: 3rem;
+      font-size: 2.5rem;
       color: var(--main);
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
     }
 
     .preview-container {
@@ -543,9 +549,9 @@
 
     .preview-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.8rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.8rem;
     }
 
     .preview-item {
@@ -563,33 +569,33 @@
 
     .preview-item .remove {
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 4px;
+      right: 4px;
       background: var(--danger);
       color: white;
       border: none;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
 
     .close-modal {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
       background: transparent;
       border: none;
       color: var(--text-secondary);
-      font-size: 2rem;
+      font-size: 1.8rem;
       cursor: pointer;
       transition: color 0.2s ease;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -615,8 +621,8 @@
 
     .confetti {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background: var(--main);
       animation: confetti-fall 5s linear forwards;
     }
@@ -634,9 +640,9 @@
     /* Product Details Modal */
     .product-detail-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-top: 1.5rem;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 1.2rem;
     }
 
     .product-detail-images {
@@ -650,18 +656,19 @@
       aspect-ratio: 16/9;
       object-fit: cover;
       background: #151515;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
     }
 
     .product-thumbnails {
       display: flex;
-      gap: 0.8rem;
+      gap: 0.6rem;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     .product-thumbnail {
-      width: 80px;
-      height: 60px;
+      width: 70px;
+      height: 50px;
       border-radius: 8px;
       object-fit: cover;
       cursor: pointer;
@@ -678,37 +685,45 @@
     .product-detail-info {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      gap: 1rem;
     }
 
     .product-detail-row {
       display: flex;
       justify-content: space-between;
-      padding: 0.8rem 0;
+      padding: 0.7rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
     }
 
     .product-detail-label {
       color: var(--text-secondary);
       font-weight: 500;
+      font-size: 0.95rem;
+      flex: 1;
+      min-width: 140px;
     }
 
     .product-detail-value {
       font-weight: 600;
       text-align: right;
+      flex: 1;
+      min-width: 140px;
     }
 
     .product-description {
       margin-top: 1rem;
       line-height: 1.7;
+      font-size: 0.95rem;
     }
 
     .category-badge {
       display: inline-block;
-      padding: 0.4rem 1rem;
+      padding: 0.3rem 0.8rem;
       border-radius: 50px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
     }
 
     .category-electronics {
@@ -733,18 +748,53 @@
 
     .condition-badge {
       display: inline-block;
-      padding: 0.4rem 1rem;
+      padding: 0.3rem 0.8rem;
       border-radius: 50px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       background: rgba(0, 255, 204, 0.2);
       color: var(--main);
     }
 
+    /* Mobile optimierte Buttons */
+    .mobile-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: var(--dark);
+      padding: 0.8rem;
+      z-index: 50;
+      display: none;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+    }
+
+    .mobile-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      gap: 0.3rem;
+      flex: 1;
+    }
+
+    .mobile-action-btn i {
+      font-size: 1.2rem;
+      color: var(--main);
+    }
+
+    /* Responsive Anpassungen */
     @media (max-width: 768px) {
       .products {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.2rem;
         padding: 0.8rem;
       }
       
@@ -754,11 +804,11 @@
       }
       
       #uploadForm, #productDetails {
-        padding: 1.8rem;
+        padding: 1.5rem 1rem;
       }
       
       .preview-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
       }
       
       .product-detail-content {
@@ -766,9 +816,53 @@
       }
       
       .categories {
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding: 1rem 0.5rem;
+        padding: 0.8rem 0.5rem;
+      }
+      
+      .category-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+      
+      .mobile-actions {
+        display: flex;
+      }
+      
+      #createBtn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+        bottom: 70px;
+        right: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-card {
+        padding: 1.2rem;
+      }
+      
+      .price, .timer {
+        font-size: 1.2rem;
+        min-width: 100px;
+      }
+      
+      .buy-btn {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        min-height: 50px;
+      }
+      
+      .form-title, .product-modal-title {
+        font-size: 1.4rem;
+      }
+      
+      .file-upload {
+        padding: 1rem;
+      }
+      
+      .file-upload i {
+        font-size: 2rem;
       }
     }
   </style>
@@ -776,7 +870,7 @@
 <body>
   <header>
     <div class="logo"><i class="fas fa-gem"></i></div>
-    <div>OneDrop – Schnapp es dir, bevor es jemand anders tut</div>
+    <div>OneDrop Marketplace</div>
   </header>
 
   <div class="categories" id="categoriesContainer">
@@ -896,23 +990,43 @@
 
   <button id="createBtn" aria-label="Neues Produkt erstellen">+</button>
 
+  <div class="mobile-actions">
+    <button class="mobile-action-btn" id="mobileHomeBtn">
+      <i class="fas fa-home"></i>
+      <span>Start</span>
+    </button>
+    <button class="mobile-action-btn" id="mobileCategoryBtn">
+      <i class="fas fa-th-large"></i>
+      <span>Kategorien</span>
+    </button>
+    <button class="mobile-action-btn" id="mobileUploadBtn">
+      <i class="fas fa-plus"></i>
+      <span>Hinzufügen</span>
+    </button>
+    <button class="mobile-action-btn" id="mobileProfileBtn">
+      <i class="fas fa-user"></i>
+      <span>Profil</span>
+    </button>
+  </div>
+
   <div class="confetti-container" id="confettiContainer"></div>
 
   <script>
-    // Animation für Zahlenänderungen
+    // Animation für Zahlenänderungen (Preis und Timer)
     function animateNumberChange(element, newValue, prefix = '') {
       const oldValue = element.dataset.value || '0';
       element.dataset.value = newValue.toString();
       
-      const oldStr = oldValue.padStart(4, '0');
-      const newStr = newValue.toString().padStart(4, '0');
+      // Für Timer: Format MM:SS beibehalten
+      const isTime = newValue.includes(':');
+      const oldStr = isTime ? oldValue : oldValue.padStart(4, '0');
+      const newStr = isTime ? newValue : newValue.toString().padStart(4, '0');
       
       let html = '';
       
       for (let i = 0; i < newStr.length; i++) {
         const oldChar = oldStr[i];
         const newChar = newStr[i];
-        const isDigit = /\d/.test(newChar);
         
         if (oldChar === newChar) {
           html += `<div class="digit">${newChar}</div>`;
@@ -949,12 +1063,12 @@
       
       const colors = ['#00ffcc', '#00ccff', '#ff6b6b', '#ffcc00', '#cc00ff'];
       
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 120; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.left = `${Math.random() * 100}vw`;
-        confetti.style.width = `${Math.random() * 10 + 5}px`;
-        confetti.style.height = `${Math.random() * 10 + 5}px`;
+        confetti.style.width = `${Math.random() * 8 + 4}px`;
+        confetti.style.height = `${Math.random() * 8 + 4}px`;
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDelay = `${Math.random() * 2}s`;
         confetti.style.opacity = Math.random();
@@ -1007,9 +1121,17 @@
     const conditionInput = document.getElementById('conditionInput');
     const sizeGroup = document.getElementById('sizeGroup');
     const modelGroup = document.getElementById('modelGroup');
+    const mobileUploadBtn = document.getElementById('mobileUploadBtn');
     let uploadedImages = [];
     let products = [];
     let currentCategory = 'all';
+
+    // Mobile Navigation
+    mobileUploadBtn.addEventListener('click', () => {
+      uploadModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
+    });
 
     // Kategorie-Filter
     categoriesContainer.addEventListener('click', (e) => {
@@ -1070,6 +1192,7 @@
     createBtn.addEventListener('click', () => {
       uploadModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
     });
 
     closeModals.forEach(btn => {
@@ -1311,7 +1434,6 @@
       const titleEl = document.createElement('div');
       titleEl.className = 'product-title';
       titleEl.innerHTML = `<i class="fas fa-cube"></i>${productData.title}`;
-      product.appendChild(titleEl);
       
       // Kategorie-Badge
       const categoryEl = document.createElement('div');
@@ -1319,13 +1441,15 @@
       categoryEl.textContent = categories[productData.category]?.name || 'Sonstiges';
       titleEl.appendChild(categoryEl);
       
+      product.appendChild(titleEl);
+      
       // Preis
       const priceContainer = document.createElement('div');
       priceContainer.className = 'price-container';
       priceContainer.innerHTML = `
         <i class="fas fa-tag"></i>
         <div class="price">
-          <span class="value" id="priceValue">€${productData.start.toFixed(2)}</span>
+          <span class="value" id="priceValue-${productData.id}">€${productData.start.toFixed(2)}</span>
         </div>
       `;
       product.appendChild(priceContainer);
@@ -1337,7 +1461,7 @@
       timerContainer.innerHTML = `
         <i class="fas fa-clock"></i>
         <div class="timer">
-          <span class="value" id="timerValue">${productData.timer}:00</span>
+          <span class="value" id="timerValue-${productData.id}">${productData.timer}:00</span>
         </div>
       `;
       product.appendChild(timerContainer);
@@ -1397,8 +1521,10 @@
         const timeToNextDrop = (productData.timer * 60) - (elapsed % (productData.timer * 60));
         const minutes = Math.floor(timeToNextDrop / 60);
         const seconds = Math.floor(timeToNextDrop % 60);
+        const timerStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         
-        timerValue.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        // Timer animieren
+        animateNumberChange(timerValue, timerStr);
         
         requestAnimationFrame(updateProduct);
       }
@@ -1512,6 +1638,7 @@
       
       productModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
     }
 
     // Beispielprodukte
