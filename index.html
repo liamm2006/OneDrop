@@ -95,6 +95,95 @@
       color: var(--main);
     }
 
+    /* Suchfeld Styling */
+    .search-container {
+      position: relative;
+      right: 30px;
+      margin-left: auto;
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 0;
+      opacity: 0;
+      padding: 0;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      height: 36px;
+    }
+
+    .search-input.active {
+      width: 200px;
+      opacity: 1;
+      padding: 0 15px 0 40px;
+    }
+
+    .search-btn {
+      position: absolute;
+      left: 10px;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+    }
+
+    .search-close {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+    }
+
+    .search-input.active + .search-close {
+      display: flex;
+    }
+
+    .search-btn:hover, .search-close:hover {
+      color: var(--main);
+    }
+
+    @media (max-width: 768px) {
+      .search-input.active {
+        width: 160px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-container {
+        margin-right: 0.5rem;
+      }
+      
+      .search-input.active {
+        width: 130px;
+        font-size: 0.85rem;
+      }
+      
+      .search-btn {
+        left: 8px;
+        font-size: 0.9rem;
+      }
+    }
+
     .categories {
       display: flex;
       gap: 0.5rem;
@@ -166,6 +255,7 @@
       height: 100%;
       transition: var(--transition);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      animation: fadeIn 0.5s ease-out;
     }
 
     .product-card:hover {
@@ -420,7 +510,7 @@
       50% { transform: translateY(-8px); }
     }
 
-    #uploadModal, #productModal {
+    #uploadModal, #productModal, #introModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -437,7 +527,7 @@
       padding: 1rem 0;
     }
 
-    #uploadForm, #productDetails {
+    #uploadForm, #productDetails, #introContent {
       background: var(--bg);
       padding: 1.5rem;
       border-radius: var(--radius);
@@ -465,7 +555,7 @@
       }
     }
 
-    .form-title, .product-modal-title {
+    .form-title, .product-modal-title, .intro-title {
       text-align: center;
       font-size: 1.5rem;
       margin-bottom: 0.8rem;
@@ -788,6 +878,71 @@
       color: var(--main);
     }
 
+    /* Intro Modal Styles */
+    .intro-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .intro-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      padding: 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+    }
+
+    .step-number {
+      background: var(--main);
+      color: #000;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .intro-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .intro-skip {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .intro-skip:hover {
+      color: var(--main);
+    }
+
+    .intro-next {
+      background: var(--main);
+      color: #000;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .intro-next:hover {
+      background: var(--main-dark);
+      transform: translateY(-2px);
+    }
+
  /* Standard: ausgeblendet */
 .mobile-actions {
   display: none;
@@ -846,7 +1001,7 @@
         gap: 0.6rem;
       }
 
-      #uploadForm, #productDetails {
+      #uploadForm, #productDetails, #introContent {
         padding: 1.2rem 0.8rem;
         width: 95%;
         margin: 1rem;
@@ -898,7 +1053,7 @@
         min-height: 44px;
       }
 
-      .form-title, .product-modal-title {
+      .form-title, .product-modal-title, .intro-title {
         font-size: 1.3rem;
       }
 
@@ -917,6 +1072,10 @@
 
       header {
         padding: 0.8rem;
+      }
+      
+      .search-input.active {
+        width: 150px;
       }
     }
 
@@ -945,6 +1104,15 @@
       .categories {
         top: 52px;
       }
+      
+      .search-input.active {
+        width: 120px;
+        padding: 0 12px 0 35px;
+      }
+      
+      .search-btn {
+        left: 6px;
+      }
     }
 
     /* Verbesserungen für sehr kleine Geräte */
@@ -960,6 +1128,10 @@
       
       .mobile-action-btn i {
         font-size: 1.4rem;
+      }
+      
+      .search-input.active {
+        width: 100px;
       }
     }
 
@@ -1022,12 +1194,33 @@
       opacity: 0;
       pointer-events: none;
     }
+    
+    /* Animationen für Suche */
+    @keyframes slideIn {
+      from { transform: translateX(-10px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .search-results {
+      animation: slideIn 0.3s ease-out;
+    }
   </style>
 </head>
 <body>
   <header id="mainHeader">
     <div class="logo"><i class="fas fa-gem"></i></div>
     <div>OneDrop│ Letztes Update am 3. September 2025 vollzogen</div>
+    
+    <!-- Suchfeld im Header -->
+    <div class="search-container">
+      <input type="text" class="search-input" id="searchInput" placeholder="Suchen...">
+      <button class="search-btn" id="searchBtn">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="search-close" id="searchClose">
+        &times;
+      </button>
+    </div>
   </header>
 
   <div class="categories" id="categoriesContainer">
@@ -1145,6 +1338,47 @@
     </div>
   </div>
 
+  <!-- Intro Modal -->
+  <div id="introModal">
+    <div id="introContent">
+      <h2 class="intro-title"><i class="fas fa-graduation-cap"></i> OneDrop Tutorial</h2>
+      <div class="intro-steps">
+        <div class="intro-step">
+          <div class="step-number">1</div>
+          <div>
+            <strong>Produkte durchsuchen</strong>
+            <p>Durchstöbere alle verfügbaren Produkte oder filtere nach Kategorien</p>
+          </div>
+        </div>
+        <div class="intro-step">
+          <div class="step-number">2</div>
+          <div>
+            <strong>Preise beobachten</strong>
+            <p>Die Preise fallen kontinuierlich - kaufe zum niedrigstmöglichen Preis!</p>
+          </div>
+        </div>
+        <div class="intro-step">
+          <div class="step-number">3</div>
+          <div>
+            <strong>Schnell zuschlagen</strong>
+            <p>Wenn dir ein Preis gefällt, klicke auf "Jetzt kaufen" bevor es jemand anderer tut</p>
+          </div>
+        </div>
+        <div class="intro-step">
+          <div class="step-number">4</div>
+          <div>
+            <strong>Eigene Produkte verkaufen</strong>
+            <p>Nutze das "+" Symbol um eigene Produkte zum Verkauf anzubieten</p>
+          </div>
+        </div>
+      </div>
+      <div class="intro-footer">
+        <button class="intro-skip" id="introSkip">Überspringen</button>
+        <button class="intro-next" id="introNext">Verstanden!</button>
+      </div>
+    </div>
+  </div>
+
   <button id="createBtn" aria-label="Neues Produkt erstellen">+</button>
 
   <div class="mobile-actions">
@@ -1173,8 +1407,10 @@
   </div>
 
   <script>
-    // --- Verbesserte, robuste Zahl-Animationsfunktion ---
-    // Slide/flip-ähnliche Animation: alte Zahl slidet nach oben raus, neue kommt von unten rein.
+    // Prüfen, ob das Intro bereits angezeigt wurde
+    const introShown = localStorage.getItem('introShown');
+    
+    // Verbesserte, robuste Zahl-Animationsfunktion
     function animateNumberChange(element, newValue, prefix = '') {
       const oldValue = element.dataset.value !== undefined ? String(element.dataset.value) : '';
       const newStrRaw = String(newValue);
@@ -1233,7 +1469,7 @@
       });
     }
 
-    // --- Confetti ---
+    // Confetti
     function createConfetti() {
       const container = document.getElementById('confettiContainer');
       container.style.display = 'block';
@@ -1286,6 +1522,7 @@
     const createBtn = document.getElementById('createBtn');
     const uploadModal = document.getElementById('uploadModal');
     const productModal = document.getElementById('productModal');
+    const introModal = document.getElementById('introModal');
     const uploadForm = document.getElementById('uploadForm');
     const closeModals = document.querySelectorAll('.close-modal');
     const fileUploadArea = document.getElementById('fileUploadArea');
@@ -1301,11 +1538,52 @@
     const mobileCategoryBtn = document.getElementById('mobileCategoryBtn');
     const mobileProfileBtn = document.getElementById('mobileProfileBtn');
     const loadingOverlay = document.getElementById('loadingOverlay');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchClose = document.getElementById('searchClose');
+    const introSkip = document.getElementById('introSkip');
+    const introNext = document.getElementById('introNext');
 
     let uploadedImages = [];
     let products = [];
     let currentCategory = 'all';
     let lastScrollTop = 0;
+
+    // Intro Modal anzeigen, wenn noch nicht gezeigt
+    if (!introShown) {
+      setTimeout(() => {
+        introModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }, 1000);
+    }
+
+    // Intro Modal schließen
+    introSkip.addEventListener('click', closeIntro);
+    introNext.addEventListener('click', closeIntro);
+
+    function closeIntro() {
+      introModal.style.display = 'none';
+      document.body.style.overflow = '';
+      localStorage.setItem('introShown', 'true');
+    }
+
+    // Suchfunktionalität
+    searchBtn.addEventListener('click', () => {
+      searchInput.classList.toggle('active');
+      if (searchInput.classList.contains('active')) {
+        searchInput.focus();
+      }
+    });
+
+    searchClose.addEventListener('click', () => {
+      searchInput.classList.remove('active');
+      searchInput.value = '';
+      filterProducts();
+    });
+
+    searchInput.addEventListener('input', () => {
+      filterProducts();
+    });
 
     // Scroll-Verhalten für Header und Kategorien
     window.addEventListener('scroll', function() {
@@ -1373,8 +1651,29 @@
 
     function filterProducts() {
       containerEl.innerHTML = '';
-      const filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
+      let filtered = currentCategory === 'all' ? products : products.filter(p => p.category === currentCategory);
+      
+      // Suchfilter anwenden, wenn Suchbegriff vorhanden
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      if (searchTerm) {
+        filtered = filtered.filter(product => 
+          product.title.toLowerCase().includes(searchTerm) || 
+          product.description.toLowerCase().includes(searchTerm)
+        );
+      }
+      
       filtered.forEach(product => createProductCard(product));
+      
+      // Suchhinweis anzeigen, wenn keine Ergebnisse
+      if (filtered.length === 0 && searchTerm) {
+        containerEl.innerHTML = `
+          <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+            <h3>Aww Keine Treffer</h3>
+            <p>Versuche einen anderen Suchbegriff ;)</p>
+          </div>
+        `;
+      }
     }
 
     // category change -> populate conditions
@@ -1540,7 +1839,10 @@
       }, 1000);
     });
 
-    function addProduct(productData) { products.push(productData); createProductCard(productData); }
+    function addProduct(productData) { 
+      products.push(productData); 
+      createProductCard(productData); 
+    }
 
     function createProductCard(productData) {
       const card = document.createElement('div');
