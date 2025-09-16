@@ -1,4 +1,4 @@
-    :root {
+   :root {
       --main: #00ffcc;
       --main-dark: #00d6b3;
       --main-light: rgba(0, 255, 204, 0.1);
@@ -293,6 +293,92 @@
 
     .category-btn:hover:not(.active) i {
       color: var(--main);
+    }
+
+    /* New Arrivals Section */
+    .new-arrivals {
+      width: 100%;
+      max-width: 1400px;
+      padding: 1.5rem 1rem;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .new-arrivals-container {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0.5rem 0;
+      scroll-behavior: smooth;
+    }
+
+    .new-arrivals-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .new-arrival-card {
+      flex: 0 0 auto;
+      width: 200px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: var(--transition-slow);
+      border: 1px solid var(--glass-border);
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    .new-arrival-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 255, 204, 0.2);
+    }
+
+    .new-arrival-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+    }
+
+    .new-arrival-info h3 {
+      font-size: 1rem;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .new-arrival-info p {
+      color: var(--main);
+      font-weight: bold;
+      margin: 0;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     /* Produkt-Grid */
@@ -617,7 +703,7 @@
     }
 
     /* Modals */
-    #uploadModal, #productModal, #introModal, #profileModal, #chatModal, #ratingModal, #notificationModal, #shippingModal {
+    #uploadModal, #productModal, #introModal, #profileModal, #commentModal, #ratingModal, #notificationModal, #shippingModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -635,7 +721,7 @@
       padding: 1rem 0;
     }
 
-    #uploadForm, #productDetails, #introContent, #profileContent, #chatContent, #ratingContent, #notificationContent, #shippingContent {
+    #uploadForm, #productDetails, #introContent, #profileContent, #commentContent, #ratingContent, #notificationContent, #shippingContent {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -665,7 +751,7 @@
       }
     }
 
-    .form-title, .product-modal-title, .intro-title, .profile-title, .chat-title, .rating-title, .notification-title, .shipping-title {
+    .form-title, .product-modal-title, .intro-title, .profile-title, .comment-title, .rating-title, .notification-title, .shipping-title {
       text-align: center;
       font-size: 1.7rem;
       margin-bottom: 1rem;
@@ -956,6 +1042,10 @@
       flex: 1;
       min-width: 140px;
       font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.3rem;
     }
 
     .product-description {
@@ -1175,8 +1265,8 @@
       transform: scale(1.2);
     }
 
-    /* Chat Styling */
-    .chat-messages {
+    /* Kommentar Styling */
+    .comment-list {
       height: 320px;
       overflow-y: auto;
       background: rgba(0, 0, 0, 0.2);
@@ -1189,40 +1279,35 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .message {
+    .comment {
       padding: 1rem;
       border-radius: var(--radius);
-      max-width: 80%;
       word-break: break-word;
       animation: fadeIn 0.4s ease;
       box-shadow: var(--shadow-light);
-    }
-
-    .message.sent {
-      background: rgba(0, 255, 204, 0.2);
-      align-self: flex-end;
-      border: 1px solid rgba(0, 255, 204, 0.3);
-    }
-
-    .message.received {
       background: rgba(255, 255, 255, 0.1);
-      align-self: flex-start;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .message-time {
-      font-size: 0.75rem;
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
-      margin-top: 0.4rem;
-      text-align: right;
     }
 
-    .chat-input {
+    .comment-text {
+      line-height: 1.5;
+    }
+
+    .comment-input {
       display: flex;
+      flex-direction: column;
       gap: 0.6rem;
     }
 
-    .chat-input input {
+    .comment-input textarea {
       flex: 1;
       padding: 0.8rem;
       border: none;
@@ -1230,9 +1315,11 @@
       background: var(--bg-light);
       color: var(--text);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      min-height: 100px;
+      resize: vertical;
     }
 
-    .chat-input button {
+    .comment-input button {
       padding: 0.8rem 1.2rem;
       border: none;
       border-radius: var(--radius-sm);
@@ -1241,9 +1328,13 @@
       cursor: pointer;
       font-weight: 600;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .chat-input button:hover {
+    .comment-input button:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 255, 204, 0.3);
     }
@@ -1384,6 +1475,8 @@
 
     .mobile-action-btn.active {
       color: var(--main);
+      background: rgba(0, 255, 204, 0.1);
+      border-radius: var(--radius-sm);
     }
 
     .mobile-action-btn:hover {
@@ -1407,7 +1500,7 @@
         gap: 0.8rem;
       }
 
-      #uploadForm, #productDetails, #introContent, #profileContent, #chatContent, #ratingContent, #notificationContent, #shippingContent {
+      #uploadForm, #productDetails, #introContent, #profileContent, #commentContent, #ratingContent, #notificationContent, #shippingContent {
         padding: 1.5rem 1rem;
         width: 95%;
         margin: 1rem;
@@ -1459,7 +1552,7 @@
         min-height: 48px;
       }
 
-      .form-title, .product-modal-title, .intro-title, .profile-title, .chat-title, .rating-title, .notification-title, .shipping-title {
+      .form-title, .product-modal-title, .intro-title, .profile-title, .comment-title, .rating-title, .notification-title, .shipping-title {
         font-size: 1.5rem;
       }
 
@@ -1484,8 +1577,12 @@
         width: 160px;
       }
 
-      .chat-messages {
+      .comment-list {
         height: 240px;
+      }
+
+      .new-arrival-card {
+        width: 180px;
       }
     }
 
@@ -1528,6 +1625,15 @@
         flex-direction: column;
         text-align: center;
       }
+
+      .new-arrival-card {
+        width: 160px;
+        padding: 0.8rem;
+      }
+
+      .new-arrival-info h3 {
+        font-size: 0.9rem;
+      }
     }
 
     @media (max-width: 350px) {
@@ -1546,6 +1652,10 @@
       
       .search-input.active {
         width: 120px;
+      }
+
+      .new-arrival-card {
+        width: 140px;
       }
     }
 
@@ -1692,4 +1802,24 @@
     .secondary-button:hover {
       background: rgba(255, 255, 255, 0.15);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Kommentar-Button in Produktdetails */
+    .comment-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .comment-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
     }

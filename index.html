@@ -4,12 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OneDrop Marketplace (modern)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="styles.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    crossorigin="anonymous"
-  />
 </head>
 <body>
   <header id="mainHeader">
@@ -51,6 +47,14 @@
       <i class="fas fa-box"></i> Sonstiges
     </button>
   </div>
+
+  <!-- New Arrivals Section -->
+  <section class="new-arrivals">
+    <h2 class="section-title"><i class="fas fa-fire"></i> New Arrivals</h2>
+    <div class="new-arrivals-container" id="newArrivalsContainer">
+      <!-- New Arrivals werden per JavaScript eingefügt -->
+    </div>
+  </section>
 
   <div class="products" id="productContainer"></div>
 
@@ -199,17 +203,17 @@
     </div>
   </div>
 
-  <!-- Chat Modal -->
-  <div id="chatModal">
+  <!-- Kommentar Modal -->
+  <div id="commentModal">
     <button class="close-modal" aria-label="Modal schließen">&times;</button>
-    <div id="chatContent">
-      <h2 class="chat-title"><i class="fas fa-comments"></i> Chat mit Verkäufer</h2>
-      <div class="chat-messages" id="chatMessages">
-        <!-- Nachrichten werden hier eingefügt -->
+    <div id="commentContent">
+      <h2 class="comment-title"><i class="fas fa-comments"></i> Kommentare</h2>
+      <div class="comment-list" id="commentList">
+        <!-- Kommentare werden hier eingefügt -->
       </div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Nachricht eingeben...">
-        <button id="sendMessageBtn" class="action-button"><i class="fas fa-paper-plane"></i> Senden</button>
+      <div class="comment-input">
+        <textarea id="commentInput" placeholder="Schreibe einen Kommentar..."></textarea>
+        <button id="submitCommentBtn" class="action-button"><i class="fas fa-paper-plane"></i> Kommentar abschicken</button>
       </div>
     </div>
   </div>
@@ -454,37 +458,9 @@
       }, 5000);
     }
 
-    // Kategorie- und Zustandsdaten
-    const categories = {
-      electronics: {
-        name: "Elektronik",
-        conditions: ["Neu", "Gebraucht", "Refurbished", "Defekt"],
-        color: "var(--category-electronics)"
-      },
-      clothing: {
-        name: "Kleidung",
-        conditions: ["Neu mit Etikett", "Neu ohne Etikett", "Sehr gut", "Gut", "Akzeptabel"],
-        color: "var(--category-clothing)"
-      },
-      bike: {
-        name: "Fahrrad",
-        conditions: ["Neu", "Gebraucht", "Restauriert", "Vintage"],
-        color: "var(--category-bike)"
-      },
-      thegoat: {
-        name: "THE GOAT",
-        conditions: ["Neu", "Gebraucht", "Restauriert", "Vintage"],
-        color: "var(--category-other)"
-      },
-      other: {
-        name: "Sonstiges",
-        conditions: ["Neu", "Gebraucht", "Antik", "Sammlerstück"],
-        color: "var(--category-other)"
-      }
-    };
-
     // DOM-Elemente
     const containerEl = document.getElementById('productContainer');
+    const newArrivalsContainer = document.getElementById('newArrivalsContainer');
     const categoriesContainer = document.getElementById('categoriesContainer');
     const mainHeader = document.getElementById('mainHeader');
     const createBtn = document.getElementById('createBtn');
@@ -492,7 +468,7 @@
     const productModal = document.getElementById('productModal');
     const introModal = document.getElementById('introModal');
     const profileModal = document.getElementById('profileModal');
-    const chatModal = document.getElementById('chatModal');
+    const commentModal = document.getElementById('commentModal');
     const ratingModal = document.getElementById('ratingModal');
     const notificationModal = document.getElementById('notificationModal');
     const shippingModal = document.getElementById('shippingModal');
@@ -520,9 +496,9 @@
     const notificationBadge = document.getElementById('notificationBadge');
     const notificationList = document.getElementById('notificationList');
     const clearNotificationsBtn = document.getElementById('clearNotificationsBtn');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const commentList = document.getElementById('commentList');
+    const commentInput = document.getElementById('commentInput');
+    const submitCommentBtn = document.getElementById('submitCommentBtn');
     const starRating = document.getElementById('starRating');
     const ratingComment = document.getElementById('ratingComment');
     const submitRatingBtn = document.getElementById('submitRatingBtn');
@@ -533,12 +509,12 @@
     let products = [];
     let currentCategory = 'all';
     let lastScrollTop = 0;
-    let currentSeller = null;
     let currentProductForRating = null;
+    let currentProductForComment = null;
     let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     let ratings = JSON.parse(localStorage.getItem('ratings')) || [];
-    let chats = JSON.parse(localStorage.getItem('chats')) || {};
+    let comments = JSON.parse(localStorage.getItem('comments')) || {};
     let detailPriceInterval = null;
 
     // Funktionen zum Verstecken/Anzeigen von Header und Kategorien
@@ -765,7 +741,7 @@
         ? userRatings.reduce((sum, r) => sum + r.rating, 0) / userRatings.length 
         : 0;
       
-      profileContent.innerHTML = `
+      document.getElementById('profileContent').innerHTML = `
         <h2 class="profile-title"><i class="fas fa-user"></i> Dein Profil</h2>
         <div class="seller-info">
           <img src="https://placehold.co/100x100/00ffcc/000000?text=DU" alt="Dein Profil" class="seller-avatar">
@@ -839,8 +815,33 @@
         `;
       }
       
+      // New Arrivals aktualisieren
+      updateNewArrivals();
+      
       // Starte kontinuierliche Animation
       startContinuousAnimation();
+    }
+
+    // New Arrivals aktualisieren
+    function updateNewArrivals() {
+      newArrivalsContainer.innerHTML = '';
+      
+      // Sortiere Produkte nach Erstellungsdatum (neueste zuerst) und nimm die ersten 5
+      const newProducts = [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+      
+      newProducts.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'new-arrival-card';
+        card.innerHTML = `
+          <img src="${product.images[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>'}" alt="${product.title}">
+          <div class="new-arrival-info">
+            <h3>${product.title}</h3>
+            <p>€${product.start.toFixed(2)}</p>
+          </div>
+        `;
+        card.addEventListener('click', () => showProductDetails(product));
+        newArrivalsContainer.appendChild(card);
+      });
     }
 
     // category change -> populate conditions
@@ -878,7 +879,7 @@
         productModal.style.display = 'none';
         introModal.style.display = 'none';
         profileModal.style.display = 'none';
-        chatModal.style.display = 'none';
+        commentModal.style.display = 'none';
         ratingModal.style.display = 'none';
         notificationModal.style.display = 'none';
         shippingModal.style.display = 'none';
@@ -911,7 +912,7 @@
         
         // Stoppe das Intervall für die Detailansicht
         if (detailPriceInterval) {
-          clearInterval(ddetailPriceInterval);
+          clearInterval(detailPriceInterval);
           detailPriceInterval = null;
         }
       } 
@@ -931,9 +932,9 @@
       } 
     });
 
-    chatModal.addEventListener('click', (e) => { 
-      if (e.target === chatModal) { 
-        chatModal.style.display = 'none'; 
+    commentModal.addEventListener('click', (e) => { 
+      if (e.target === commentModal) { 
+        commentModal.style.display = 'none'; 
         document.body.style.overflow = ''; 
         showHeaderAndCategories();
       } 
@@ -1067,6 +1068,7 @@
     function addProduct(productData) { 
       products.push(productData); 
       createProductCard(productData); 
+      updateNewArrivals();
       startContinuousAnimation();
     }
 
@@ -1171,46 +1173,20 @@
       });
       card.appendChild(btn);
 
-      // Verkäuferinfo mit Bewertungsbutton
-      const sellerInfo = document.createElement('div');
-      sellerInfo.style.marginTop = '0.8rem';
-      sellerInfo.style.display = 'flex';
-      sellerInfo.style.justifyContent = 'space-between';
-      sellerInfo.style.alignItems = 'center';
-      sellerInfo.style.flexWrap = 'wrap';
-      sellerInfo.style.gap = '0.5rem';
-      
-      const sellerText = document.createElement('div');
-      sellerText.innerHTML = `Von: <span style="color: var(--main); cursor: pointer;" class="seller-link">${productData.sellerName}</span>`;
-      sellerText.querySelector('.seller-link').addEventListener('click', (e) => {
+      // Kommentar-Button
+      const commentBtn = document.createElement('button');
+      commentBtn.className = 'comment-btn';
+      commentBtn.innerHTML = '<i class="fas fa-comment"></i> Kommentare';
+      commentBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        openChat({
-          id: productData.sellerId,
-          name: productData.sellerName
-        });
-      });
-      
-      const ratingBtn = document.createElement('button');
-      ratingBtn.innerHTML = '<i class="fas fa-star"></i> Bewerten';
-      ratingBtn.className = 'secondary-button';
-      ratingBtn.style.fontSize = '0.8rem';
-      ratingBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentProductForRating = productData;
-        ratingModal.style.display = 'flex';
+        currentProductForComment = productData;
+        commentModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         hideHeaderAndCategories();
-        
-        // Sterne zurücksetzen
-        starRating.querySelectorAll('.star').forEach(star => {
-          star.classList.remove('active');
-        });
-        ratingComment.value = '';
+        renderComments();
       });
       
-      sellerInfo.appendChild(sellerText);
-      sellerInfo.appendChild(ratingBtn);
-      card.appendChild(sellerInfo);
+      card.appendChild(commentBtn);
 
       // card click -> details
       card.addEventListener('click', (e) => { 
@@ -1220,6 +1196,57 @@
 
       containerEl.appendChild(card);
     }
+
+    // Kommentare rendern
+    function renderComments() {
+      commentList.innerHTML = '';
+      
+      if (!currentProductForComment) return;
+      
+      const productId = currentProductForComment.id;
+      if (!comments[productId] || comments[productId].length === 0) {
+        commentList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">Noch keine Kommentare</p>';
+        return;
+      }
+      
+      comments[productId].forEach(comment => {
+        const commentEl = document.createElement('div');
+        commentEl.className = 'comment';
+        commentEl.innerHTML = `
+          <div class="comment-header">
+            <span>${comment.author || 'Anonym'}</span>
+            <span>${new Date(comment.timestamp).toLocaleString()}</span>
+          </div>
+          <div class="comment-text">${comment.text}</div>
+        `;
+        commentList.appendChild(commentEl);
+      });
+    }
+
+    // Kommentar hinzufügen
+    submitCommentBtn.addEventListener('click', () => {
+      const commentText = commentInput.value.trim();
+      if (!commentText || !currentProductForComment) return;
+      
+      const productId = currentProductForComment.id;
+      if (!comments[productId]) {
+        comments[productId] = [];
+      }
+      
+      const newComment = {
+        id: Date.now(),
+        text: commentText,
+        author: 'Du',
+        timestamp: new Date().toISOString()
+      };
+      
+      comments[productId].push(newComment);
+      localStorage.setItem('comments', JSON.stringify(comments));
+      
+      commentInput.value = '';
+      renderComments();
+      addNotification('Kommentar hinzugefügt', 'Dein Kommentar wurde erfolgreich veröffentlicht.');
+    });
 
     // show product details
     function showProductDetails(productData) {
@@ -1283,10 +1310,7 @@
             <div class="product-detail-row">
               <div class="product-detail-label">Verkäufer:</div>
               <div class="product-detail-value">
-                <span style="color: var(--main); cursor: pointer;" id="detailSeller">${productData.sellerName}</span>
-                <button class="secondary-button" style="margin-left: 0.5rem; padding: 0.2rem 0.5rem; font-size: 0.8rem;" id="chatWithSellerBtn">
-                  <i class="fas fa-comment"></i> Chat
-                </button>
+                <span style="color: var(--main);">${productData.sellerName}</span>
               </div>
             </div>
 
@@ -1301,6 +1325,9 @@
               </button>
               <button id="setPriceAlarmBtn" class="secondary-button">
                 <i class="fas fa-bell"></i>
+              </button>
+              <button id="showCommentsBtn" class="comment-btn">
+                <i class="fas fa-comment"></i> Kommentare
               </button>
             </div>
           </div>
@@ -1319,28 +1346,21 @@
         });
       }
 
-      // Chat mit Verkäufer
-      document.getElementById('detailSeller').addEventListener('click', () => {
-        openChat({
-          id: productData.sellerId,
-          name: productData.sellerName
-        });
-      });
-
-      document.getElementById('chatWithSellerBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        openChat({
-          id: productData.sellerId,
-          name: productData.sellerName
-        });
-      });
-
       // Preisalarm setzen
       document.getElementById('setPriceAlarmBtn').addEventListener('click', () => {
         const targetPrice = prompt('Bei welchem Preis möchtest du benachrichtigt werden? (€)');
         if (targetPrice && !isNaN(parseFloat(targetPrice))) {
           addNotification('Preisalarm gesetzt', `Du wirst benachrichtigt, wenn der Preis von ${productData.title} unter €${parseFloat(targetPrice).toFixed(2)} fällt.`);
         }
+      });
+
+      // Kommentare anzeigen
+      document.getElementById('showCommentsBtn').addEventListener('click', () => {
+        currentProductForComment = productData;
+        commentModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        hideHeaderAndCategories();
+        renderComments();
       });
 
       // Kaufbutton im Modal
@@ -1393,86 +1413,6 @@
           detailTimerEl.textContent = timerStr;
         }
       }, 1000);
-    }
-
-    // Chat-Funktion
-    function openChat(seller) {
-      currentSeller = seller;
-      chatModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-      hideHeaderAndCategories();
-      renderChatMessages();
-    }
-
-    // Nachrichten rendern
-    function renderChatMessages() {
-      chatMessages.innerHTML = '';
-      
-      const chatId = `chat_${currentSeller.id}`;
-      if (!chats[chatId]) {
-        chats[chatId] = [];
-      }
-      
-      if (chats[chatId].length === 0) {
-        chatMessages.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">Noch keine Nachrichten</p>';
-        return;
-      }
-      
-      chats[chatId].forEach(message => {
-        const messageEl = document.createElement('div');
-        messageEl.className = `message ${message.sender === 'user' ? 'sent' : 'received'}`;
-        messageEl.innerHTML = `
-          <p>${message.text}</p>
-          <div class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</div>
-        `;
-        chatMessages.appendChild(messageEl);
-      });
-      
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // Nachricht senden
-    sendMessageBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
-    function sendMessage() {
-      const messageText = chatInput.value.trim();
-      if (!messageText) return;
-      
-      const chatId = `chat_${currentSeller.id}`;
-      if (!chats[chatId]) {
-        chats[chatId] = [];
-      }
-      
-      const newMessage = {
-        id: Date.now(),
-        text: messageText,
-        sender: 'user',
-        timestamp: new Date().toISOString()
-      };
-      
-      chats[chatId].push(newMessage);
-      localStorage.setItem('chats', JSON.stringify(chats));
-      
-      // Simuliere eine Antwort nach 2 Sekunden
-      setTimeout(() => {
-        const responseMessage = {
-          id: Date.now() + 1,
-          text: 'Vielen Dank für Ihre Nachricht. Wir werden uns so schnell wie möglich bei Ihnen melden.',
-          sender: 'seller',
-          timestamp: new Date().toISOString()
-        };
-        
-        chats[chatId].push(responseMessage);
-        localStorage.setItem('chats', JSON.stringify(chats));
-        renderChatMessages();
-        addNotification('Neue Nachricht', `Neue Antwort von ${currentSeller.name}`);
-      }, 2000);
-      
-      chatInput.value = '';
-      renderChatMessages();
     }
 
     // Versandoptionen
@@ -1594,6 +1534,41 @@
       // Starte kontinuierliche Animation
       startContinuousAnimation();
     });
+
+
+      let categories = {};
+
+  fetch("database.json")
+    .then(response => response.json())
+    .then(data => {
+      categories = data;
+      populateCategorySelect();
+    });
+
+  function populateCategorySelect() {
+    const categoryInput = document.getElementById('categoryInput');
+    categoryInput.innerHTML = '<option value="">Bitte wählen</option>';
+    for (const key in categories) {
+      const option = document.createElement('option');
+      option.value = key;
+      option.textContent = categories[key].name;
+      categoryInput.appendChild(option);
+    }
+  }
+
+  // Event Listener für Category → Condition Auswahl
+  document.getElementById('categoryInput').addEventListener('change', function () {
+    const condInput = document.getElementById('conditionInput');
+    condInput.innerHTML = '<option value="">Bitte wählen</option>';
+    if (this.value && categories[this.value]) {
+      categories[this.value].conditions.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c;
+        option.textContent = c;
+        condInput.appendChild(option);
+      });
+    }
+  });
   </script>
 </body>
 </html>
