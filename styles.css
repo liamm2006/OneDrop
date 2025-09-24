@@ -295,74 +295,268 @@
       color: var(--main);
     }
 
-    /* New Arrivals Section */
-    .new-arrivals {
-      width: 100%;
-      max-width: 1400px;
-      padding: 1.5rem 1rem;
-      margin-top: 1rem;
-      overflow: hidden;
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      width: 250px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--glass-border);
+      padding: 1rem;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 99;
+      overflow-y: auto;
     }
 
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--main);
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding-left: 0.5rem;
-    }
-
-    .new-arrivals-container {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding: 0.5rem 0;
-      scroll-behavior: smooth;
-    }
-
-    .new-arrivals-container::-webkit-scrollbar {
-      display: none;
-    }
-
-    .new-arrival-card {
-      flex: 0 0 auto;
-      width: 200px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: var(--radius);
-      padding: 1rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      transition: var(--transition-slow);
-      border: 1px solid var(--glass-border);
-      animation: slideInRight 0.6s ease-out;
-    }
-
-    .new-arrival-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 255, 204, 0.2);
-    }
-
-    .new-arrival-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
+      padding: 0.8rem 1rem;
+      color: var(--text);
+      text-decoration: none;
       border-radius: var(--radius-sm);
+      transition: var(--transition);
     }
 
-    .new-arrival-info h3 {
-      font-size: 1rem;
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .sidebar-menu a:hover {
+      background: rgba(0, 255, 204, 0.1);
+      color: var(--main);
     }
+
+    .sidebar-toggle {
+      left: 12rem;
+      top: 1.5rem;
+      background: var(--main);
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: transform 0.15s cubic-bezier(0.06, 1.41, 0.49, 1.76)
+    }
+    .sidebar-toggle:active {
+      transform: scale(0.92);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar-toggle {
+        display: flex;
+      }
+    }
+
+/* New Arrivals Section - Verbessert */
+.new-arrivals {
+  width: 100%;
+  max-width: 1400px;
+  padding: 1.5rem 1rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.fire-title-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.fire-text {
+  position: relative;
+  display: inline-block;
+  z-index: 2;
+  padding: 0.5rem 1.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 102, 0, 0.3);
+}
+
+.fire-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 150%;
+  background: radial-gradient(ellipse at center, 
+    rgba(255, 102, 0, 0.4) 0%, 
+    rgba(255, 60, 0, 0.3) 20%, 
+    rgba(255, 30, 0, 0.2) 40%, 
+    transparent 70%);
+  z-index: 1;
+  animation: fire-flicker 2s infinite alternate;
+  border-radius: 50%;
+  filter: blur(5px);
+}
+
+@keyframes fire-flicker {
+  0%, 100% { 
+    opacity: 0.8; 
+    transform: translate(-50%, -50%) scale(1);
+  }
+  25% { 
+    opacity: 0.9; 
+    transform: translate(-50%, -52%) scale(1.05);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  75% { 
+    opacity: 0.85; 
+    transform: translate(-50%, -51%) scale(1.03);
+  }
+}
+
+.new-arrivals-scroll-container {
+  position: relative;
+  overflow: hidden;
+  padding: 0.5rem 0;
+}
+
+.new-arrivals-container {
+  display: flex;
+  gap: 1rem;
+  animation: scroll-horizontal 40s linear infinite;
+  padding: 0.5rem;
+  width: max-content;
+}
+
+.new-arrivals-container:hover {
+  animation-play-state: paused;
+}
+
+.new-arrival-card {
+  flex: 0 0 auto;
+  width: 200px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: var(--transition-slow);
+  border: 1px solid var(--glass-border);
+}
+
+.new-arrival-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 20px rgba(0, 255, 204, 0.2);
+  z-index: 5;
+}
+
+.new-arrival-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-slow);
+}
+
+.new-arrival-card:hover img {
+  transform: scale(1.1);
+}
+
+.new-arrival-info h3 {
+  font-size: 1rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.new-arrival-info p {
+  color: var(--main);
+  font-weight: bold;
+  margin: 0;
+}
+
+@keyframes scroll-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-200px - 1rem) * 10); /* Anzahl der Produkte anpassen */
+  }
+}
+
+/* Pause-Animation beim Hover für bessere Interaktivität */
+.new-arrivals-container:hover .new-arrival-card {
+  animation-play-state: paused;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .new-arrival-card {
+    width: 180px;
+  }
+  
+  @keyframes scroll-horizontal {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-180px - 1rem) * 10);
+    }
+  }
+  
+  .fire-text {
+    font-size: 1.3rem;
+    padding: 0.4rem 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-arrival-card {
+    width: 160px;
+    padding: 0.8rem;
+  }
+  
+  @keyframes scroll-horizontal {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-160px - 1rem) * 10);
+    }
+  }
+  
+  .fire-text {
+    font-size: 1.2rem;
+  }
+  
+  .new-arrival-info h3 {
+    font-size: 0.9rem;
+  }
+}
 
     .new-arrival-info p {
       color: var(--main);

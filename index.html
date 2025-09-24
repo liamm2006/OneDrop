@@ -3,14 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OneDrop Marketplace (modern)</title>
+  <title>OneDrop Marketplace</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header id="mainHeader">
     <div class="logo"><i class="fas fa-gem"></i></div>
-    <div>OneDrop│ Letztes Update am 16. SEPTEMBER 2025 vollzogen</div>
+    <div>OneDrop</div>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li><a href="index.html"><i class="fas fa-home"></i> Startseite</a></li>
+      <li><a href="changelog.html"><i class="fas fa-code-branch"></i> Changelog</a></li>
+      <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Einstellungen</a></li>
+      <li><a href="#"><i class="fas fa-question-circle"></i> Hilfe</a></li>
+    </ul>
+  </div>
     
     <!-- Suchfeld im Header -->
     <div class="search-container">
@@ -48,13 +64,20 @@
     </button>
   </div>
 
-  <!-- New Arrivals Section -->
-  <section class="new-arrivals">
-    <h2 class="section-title"><i class="fas fa-fire"></i> New Arrivals</h2>
+<!-- New Arrivals Section -->
+<section class="new-arrivals">
+  <div class="fire-title-container">
+    <h2 class="section-title fire-text">
+      <i class="fas fa-fire"></i> New Arrivals
+      <div class="fire-effect"></div>
+    </h2>
+  </div>
+  <div class="new-arrivals-scroll-container">
     <div class="new-arrivals-container" id="newArrivalsContainer">
       <!-- New Arrivals werden per JavaScript eingefügt -->
     </div>
-  </section>
+  </div>
+</section>
 
   <div class="products" id="productContainer"></div>
 
@@ -379,6 +402,22 @@
         });
       });
     }
+
+    // Sidebar functionality
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    });
+
 
     // Kontinuierliche Animation für alle Produkte
     function startContinuousAnimation() {
@@ -1569,6 +1608,32 @@
       });
     }
   });
+
+// Funktion zur Steuerung der Scroll-Animation
+function initNewArrivalsAnimation() {
+  const container = document.querySelector('.new-arrivals-container');
+  const cards = document.querySelectorAll('.new-arrival-card');
+  
+  // Dupliziere die Karten für nahtloses Scrollen
+  cards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    container.appendChild(clone);
+  });
+  
+  // Pausiere Animation wenn Container im Fokus ist
+  container.addEventListener('mouseenter', () => {
+    container.style.animationPlayState = 'paused';
+  });
+  
+  container.addEventListener('mouseleave', () => {
+    container.style.animationPlayState = 'running';
+  });
+}
+
+// Initialisiere die Animation wenn die Seite geladen ist
+document.addEventListener('DOMContentLoaded', initNewArrivalsAnimation);
+
   </script>
 </body>
 </html>
