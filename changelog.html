@@ -153,9 +153,46 @@
         padding: 1rem;
       }
     }
+
+    /* Header Anpassungen */
+    header {
+      justify-content: center !important;
+    }
   </style>
 </head>
 <body>
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="sidebar-menu">
+      <li><a href="index.html"><i class="fas fa-home"></i> Startseite</a></li>
+      <li><a href="live-auctions.html"><i class="fas fa-gavel"></i> Live-Auktionen</a></li>
+      <li><a href="tracking.html"><i class="fas fa-truck"></i> Sendungsverfolgung</a></li>
+      <li><a href="purchase-history.html"><i class="fas fa-history"></i> Kaufhistorie</a></li>
+      <li><a href="changelog.html" class="active"><i class="fas fa-code-branch"></i> Changelog</a></li>
+      <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+      <li><a href="#"><i class="fas fa-cog"></i> Einstellungen</a></li>
+      <li><a href="#"><i class="fas fa-question-circle"></i> Hilfe</a></li>
+    </ul>
+    
+    <!-- Verkäufer-Bereich -->
+    <div class="sidebar-section">
+      <h4>Verkäuferbereich</h4>
+      <ul class="sidebar-menu">
+        <li><a href="seller-dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="my-products.html"><i class="fas fa-box"></i> Meine Produkte</a></li>
+        <li><a href="sales-analytics.html"><i class="fas fa-analytics"></i> Verkaufsstatistik</a></li>
+      </ul>
+    </div>
+  </div>
+
   <header id="mainHeader">
     <div class="logo"><i class="fas fa-gem"></i></div>
     <div>OneDrop│ Changelog</div>
@@ -168,11 +205,23 @@
     
     <div class="changelog-header">
       <h1><i class="fas fa-code-branch"></i> Changelog</h1>
-      <div class="version">Aktuelle Version: 1.2.0 | Letztes Update: 24. September 2025 Vollzogen</div>
+      <div class="version">Aktuelle Version: 1.2.0 | Letztes Update: 26. September 2025 Vollzogen</div>
     </div>
-    
+
     <div class="changelog-timeline">
       <!-- Aktuellstes Update -->
+      <div class="changelog-entry">
+        <div class="changelog-date">26. September 2025 <span class="changelog-version">v1.2.1</span></div>
+        <div class="changelog-content">
+          <h3><i class="fas fa-rocket"></i> Major Update</h3>
+          <ul class="update-list">
+            <li><i class="fas fa-paint-brush"></i> UI-Verbesserungen und Performance-Optimierungen</li>
+            <li><i class="fas fa-mobile-alt"></i> Responsive Design für mobile Geräte verbessert</li>
+            <li><i class="fas fa-bug"></i> Verschiedene Bugfixes und Stabilitätsverbesserungen</li>
+          </ul>
+        </div>
+      </div>
+    
       <div class="changelog-entry">
         <div class="changelog-date">24. September 2025 <span class="changelog-version">v1.2.0</span></div>
         <div class="changelog-content">
@@ -234,26 +283,49 @@
       <i class="fas fa-home"></i>
       <span>Start</span>
     </button>
-    <button class="mobile-action-btn" id="mobileChangelogBtn" class="active">
+    <button class="mobile-action-btn" id="mobileAuctionsBtn">
+      <i class="fas fa-gavel"></i>
+      <span>Auktionen</span>
+    </button>
+    <button class="mobile-action-btn" id="mobileTrackingBtn">
+      <i class="fas fa-truck"></i>
+      <span>Tracking</span>
+    </button>
+    <button class="mobile-action-btn active" id="mobileChangelogBtn">
       <i class="fas fa-code-branch"></i>
       <span>Changelog</span>
-    </button>
-    <button class="mobile-action-btn" id="mobileBackBtn">
-      <i class="fas fa-arrow-left"></i>
-      <span>Zurück</span>
     </button>
   </div>
 
   <script>
+    // Sidebar Funktionalität für alle Seiten
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('active');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('active');
+    });
+
     // Mobile Navigation
     document.getElementById('mobileHomeBtn').addEventListener('click', () => {
       window.location.href = 'index.html';
     });
     
-    document.getElementById('mobileBackBtn').addEventListener('click', () => {
-      window.location.href = 'index.html';
+    document.getElementById('mobileAuctionsBtn').addEventListener('click', () => {
+      window.location.href = 'live-auctions.html';
     });
     
+    document.getElementById('mobileTrackingBtn').addEventListener('click', () => {
+      window.location.href = 'tracking.html';
+    });
+
     // Set active button
     document.querySelectorAll('.mobile-action-btn').forEach(btn => {
       btn.classList.remove('active');

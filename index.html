@@ -17,16 +17,29 @@
     <i class="fas fa-bars"></i>
   </button>
 
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
+  <!-- Erweiterte Sidebar im Header-Bereich -->
+<div class="sidebar" id="sidebar">
+  <ul class="sidebar-menu">
+    <li><a href="index.html"><i class="fas fa-home"></i> Startseite</a></li>
+    <li><a href="live-auctions.html"><i class="fas fa-gavel"></i> Live-Auktionen</a></li>
+    <li><a href="tracking.html"><i class="fas fa-truck"></i> Sendungsverfolgung</a></li>
+    <li><a href="purchase-history.html"><i class="fas fa-history"></i> Kaufhistorie</a></li>
+    <li><a href="changelog.html"><i class="fas fa-code-branch"></i> Changelog</a></li>
+    <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
+    <li><a href="#"><i class="fas fa-cog"></i> Einstellungen</a></li>
+    <li><a href="#"><i class="fas fa-question-circle"></i> Hilfe</a></li>
+  </ul>
+  
+  <!-- Verkäufer-Bereich -->
+  <div class="sidebar-section">
+    <h4>Verkäuferbereich</h4>
     <ul class="sidebar-menu">
-      <li><a href="index.html"><i class="fas fa-home"></i> Startseite</a></li>
-      <li><a href="changelog.html"><i class="fas fa-code-branch"></i> Changelog</a></li>
-      <li><a href="#"><i class="fas fa-user"></i> Profil</a></li>
-      <li><a href="#"><i class="fas fa-cog"></i> Einstellungen</a></li>
-      <li><a href="#"><i class="fas fa-question-circle"></i> Hilfe</a></li>
+      <li><a href="seller-dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="my-products.html"><i class="fas fa-box"></i> Meine Produkte</a></li>
+      <li><a href="sales-analytics.html"><i class="fas fa-analytics"></i> Verkaufsstatistik</a></li>
     </ul>
   </div>
+</div>
     
     <!-- Suchfeld im Header -->
     <div class="search-container">
@@ -1633,6 +1646,100 @@ function initNewArrivalsAnimation() {
 
 // Initialisiere die Animation wenn die Seite geladen ist
 document.addEventListener('DOMContentLoaded', initNewArrivalsAnimation);
+
+// Zahlungsprozess Modal
+const paymentModal = document.createElement('div');
+paymentModal.id = 'paymentModal';
+paymentModal.innerHTML = `
+  <button class="close-modal">&times;</button>
+  <div id="paymentContent">
+    <h2><i class="fas fa-credit-card"></i> Zahlungsabwicklung</h2>
+    
+    <div class="payment-steps">
+      <div class="step active">1. Versand</div>
+      <div class="step">2. Zahlung</div>
+      <div class="step">3. Bestätigung</div>
+    </div>
+
+    <div class="payment-methods">
+      <div class="payment-method active" data-method="paypal">
+        <i class="fab fa-paypal"></i> PayPal
+      </div>
+      <div class="payment-method" data-method="creditcard">
+        <i class="fas fa-credit-card"></i> Kreditkarte
+      </div>
+      <div class="payment-method" data-method="klarna">
+        <i class="fas fa-shopping-bag"></i> Klarna
+      </div>
+    </div>
+
+    <div id="paymentForms">
+      <div class="payment-form active" data-method="paypal">
+        <p>Sie werden zu PayPal weitergeleitet...</p>
+        <button class="action-button" onclick="processPayment('paypal')">
+          <i class="fab fa-paypal"></i> Mit PayPal bezahlen
+        </button>
+      </div>
+      
+      <div class="payment-form" data-method="creditcard">
+        <div class="form-group">
+          <label>Kartennummer</label>
+          <input type="text" placeholder="1234 5678 9012 3456" class="credit-card-input">
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>Ablaufdatum</label>
+            <input type="text" placeholder="MM/JJ">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" placeholder="123">
+          </div>
+        </div>
+        <button class="action-button" onclick="processPayment('creditcard')">
+          <i class="fas fa-lock"></i> Zahlung bestätigen
+        </button>
+      </div>
+    </div>
+  </div>
+`;
+document.body.appendChild(paymentModal);
+
+function showPaymentModal(product) {
+  paymentModal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  
+  // Event-Listener für Zahlungsmethoden
+  document.querySelectorAll('.payment-method').forEach(method => {
+    method.addEventListener('click', function() {
+      document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+      this.classList.add('active');
+      
+      const methodType = this.dataset.method;
+      document.querySelectorAll('.payment-form').forEach(form => form.classList.remove('active'));
+      document.querySelector(`.payment-form[data-method="${methodType}"]`).classList.add('active');
+    });
+  });
+}
+
+function processPayment(method) {
+  // Simuliere Zahlungsverarbeitung
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  loadingOverlay.style.display = 'flex';
+  
+  setTimeout(() => {
+    loadingOverlay.style.display = 'none';
+    paymentModal.style.display = 'none';
+    
+    // Erfolgsbenachrichtigung
+    addNotification('Zahlung erfolgreich', 'Ihre Bestellung wird bearbeitet!');
+    
+    // Weiter zur Sendungsverfolgung
+    setTimeout(() => {
+      window.location.href = 'tracking.html';
+    }, 2000);
+  }, 3000);
+}
 
   </script>
 </body>
