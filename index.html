@@ -2,869 +2,734 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>OneDrop - AI Powered Market</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>OneDrop - Ultimate Hype Market</title>
   
-  <!-- Fonts: Space Grotesk (Modern/Tech), Inter (Clean UI) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
   
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
-    /* --- DESIGN SYSTEM V3: GLASS & CLEAN --- */
+    /* --- DESIGN SYSTEM V4: NEON & DEEP SPACE --- */
     :root {
-      --accent: #8b5cf6; /* Modern Violet */
-      --accent-glow: rgba(139, 92, 246, 0.4);
-      --accent-text: #a78bfa;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.5);
+      --accent: #d946ef; /* Fuchsia Neon */
+      --accent-glow: rgba(217, 70, 239, 0.5);
       
-      --bg-body: #050505;
-      --bg-card: rgba(20, 20, 20, 0.6);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-highlight: rgba(255, 255, 255, 0.15);
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+
+      --bg-dark: #030305;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-glass: rgba(10, 10, 12, 0.75);
       
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+
       --text-main: #ffffff;
-      --text-muted: #9ca3af;
+      --text-muted: #94a3b8;
       
       --font-display: 'Space Grotesk', sans-serif;
-      --font-body: 'Inter', sans-serif;
+      --font-body: 'Outfit', sans-serif;
       
-      --nav-height: 80px;
-      --success-color: #22c55e;
+      --nav-height: 70px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     body {
-      background-color: var(--bg-body);
+      background-color: var(--bg-dark);
+      /* Subtle moving background mesh */
       background-image: 
-        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.1) 0%, transparent 50%);
+      background-attachment: fixed;
       color: var(--text-main);
       font-family: var(--font-body);
       overflow-x: hidden;
       min-height: 100vh;
       display: flex; flex-direction: column;
+      padding-bottom: 100px; /* Space for bottom nav on mobile if needed */
     }
 
-    /* --- TYPOGRAPHY --- */
-    h1, h2, h3, .brand, .price-display { font-family: var(--font-display); }
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-    /* --- ANIMATIONS --- */
-    .fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    /* TYPOGRAPHY */
+    h1, h2, h3, .price-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .text-accent { color: var(--accent); }
+
+    /* ANIMATIONS */
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    .pulse-dot { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); } }
+    .pulse-glow { animation: pulseGlow 2s infinite; }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
 
-    /* --- HEADER (GLASS) --- */
+    /* HEADER */
     header {
       position: fixed; top: 0; left: 0; right: 0;
       height: var(--nav-height);
-      background: rgba(5, 5, 5, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
       z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 5%;
     }
 
     .brand {
-      font-weight: 700; font-size: 1.5rem; letter-spacing: -0.03em;
-      display: flex; align-items: center; gap: 10px;
+      font-weight: 900; font-size: 1.6rem; font-family: var(--font-display);
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
     }
-    .brand-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-
-    .nav-actions { display: flex; gap: 20px; align-items: center; }
-    .icon-btn { color: var(--text-main); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-    .icon-btn:hover { color: var(--accent); }
-
-    /* --- SLIDER (NEW ARRIVALS) --- */
-    .marquee-container {
-      margin-top: calc(var(--nav-height) + 20px);
-      margin-bottom: 40px;
-      overflow: hidden;
-      border-top: 1px solid var(--glass-border);
-      border-bottom: 1px solid var(--glass-border);
-      background: rgba(255,255,255,0.02);
-      padding: 15px 0;
-    }
-    .marquee-content {
-      display: flex; gap: 50px; white-space: nowrap;
-      animation: scroll 25s linear infinite;
-    }
-    .marquee-item {
-      display: flex; align-items: center; gap: 10px;
-      font-family: var(--font-display); font-size: 1rem; color: var(--text-muted);
-    }
-    .marquee-item span { color: var(--text-main); font-weight: 600; }
-    @keyframes scroll { 
-        0% { transform: translateX(0); } 
-        100% { transform: translateX(-50%); } 
-    }
-
-    /* --- GRID LAYOUT --- */
-    main { padding: 0 5%; padding-bottom: 120px; max-width: 1600px; margin: 0 auto; width: 100%; }
+    .brand span { color: var(--primary); }
     
+    .wallet-pill {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);
+      padding: 6px 14px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+      display: flex; align-items: center; gap: 8px; transition: 0.3s;
+    }
+    .wallet-pill:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+    .wallet-amount { color: var(--success); }
+
+    /* HERO SECTION */
+    .hero {
+      margin-top: calc(var(--nav-height) + 20px);
+      padding: 0 5%; margin-bottom: 40px;
+    }
+    .hero-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; line-height: 1.1; }
+    .hero-subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; }
+
+    /* GRID */
     .grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 30px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px; padding: 0 5%; max-width: 1600px; margin: 0 auto;
     }
 
-    /* --- PRODUCT CARD V3 --- */
+    /* CARD V4 */
     .card {
       background: var(--bg-card);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
       position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
       display: flex; flex-direction: column;
-      cursor: pointer; /* Enable click for detail modal */
     }
     .card:hover {
-      transform: translateY(-8px);
-      border-color: var(--glass-highlight);
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+      transform: translateY(-6px) scale(1.01);
+      border-color: var(--primary);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
     }
 
-    .card-img-container {
-      position: relative;
-      aspect-ratio: 1; 
-      overflow: hidden;
-      background: #111;
+    .card-media {
+      position: relative; aspect-ratio: 1; overflow: hidden; background: #0a0a0a;
     }
-    .card-img-container img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.7s ease;
+    .card-media img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease;
     }
-    .card:hover .card-img-container img { transform: scale(1.05); }
+    .card:hover .card-media img { transform: scale(1.1); }
 
-    .card-badges {
-      position: absolute; top: 15px; left: 15px; right: 15px;
-      display: flex; justify-content: space-between;
-    }
-    .badge {
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-      padding: 6px 12px; border-radius: 30px;
-      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.5px;
+    .live-badge {
+      position: absolute; top: 15px; left: 15px;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 12px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px;
     }
-    .badge.accent { background: var(--accent); border-color: var(--accent); color: white; }
+    .dot-pulse { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; animation: pulseRed 1.5s infinite; }
+    @keyframes pulseRed { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { opacity: 0.5; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
 
-    .card-info { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .card-title { font-weight: 600; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    .card-title { font-size: 1.2rem; font-weight: 500; margin-bottom: 5px; }
-    .card-sub { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
-
-    .price-row {
-      margin-top: auto; padding-top: 15px;
-      border-top: 1px solid var(--glass-border);
-      display: flex; justify-content: space-between; align-items: flex-end;
+    .price-container {
+      margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-glass);
+      display: flex; justify-content: space-between; align-items: center;
     }
+    .current-price { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: var(--text-main); }
     
-    .price-main {
-      font-size: 1.8rem; font-weight: 700; color: var(--text-main);
-      font-family: var(--font-display); line-height: 1;
+    /* PROGRESS BAR FOR DROP */
+    .drop-progress {
+      height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 8px;
     }
-    .price-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .drop-bar { height: 100%; background: var(--primary); transition: width 1s linear; }
 
-    /* --- TIMER CIRCLE --- */
-    .timer-ring { position: relative; width: 40px; height: 40px; }
-    .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-    .timer-circle-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 3; }
-    .timer-circle-fg { 
-      fill: none; stroke: var(--accent); stroke-width: 3; 
-      stroke-dasharray: 100; stroke-dashoffset: 0; 
-      transition: stroke-dashoffset 1s linear; 
-    }
-    .timer-text {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 700; font-family: monospace;
-    }
-
-    /* --- FAB --- */
-    .fab-btn {
-      position: fixed; bottom: 40px; right: 40px;
-      width: 64px; height: 64px;
-      background: var(--accent); color: white;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; cursor: pointer;
-      box-shadow: 0 0 30px var(--accent-glow);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 90;
-    }
-    .fab-btn:hover { transform: scale(1.1); }
-
-    /* --- MODALS (CLEAN) --- */
+    /* MODAL */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
-      z-index: 1000; display: none; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+      z-index: 200; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;
     }
     .modal-backdrop.active { display: flex; opacity: 1; }
     
-    .modal-content {
-      background: #111; border: 1px solid var(--glass-border);
-      width: 90%; max-width: 500px; padding: 40px;
-      border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-      transform: translateY(20px); transition: transform 0.3s;
-      max-height: 90vh; overflow-y: auto;
+    .modal-panel {
+      width: 95%; max-width: 500px; background: #0e0e11;
+      border: 1px solid var(--border-glass); border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+      padding: 0; overflow: hidden;
+      transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh; display: flex; flex-direction: column;
     }
-    .modal-backdrop.active .modal-content { transform: translateY(0); }
+    .modal-backdrop.active .modal-panel { transform: scale(1); }
 
-    /* Inputs Clean */
-    input, select, textarea {
-      width: 100%; background: #1a1a1a; border: 1px solid #333;
-      color: white; padding: 16px; border-radius: 12px;
-      margin-bottom: 20px; font-family: var(--font-body); font-size: 1rem;
-      transition: border-color 0.2s;
-    }
-    input:focus { outline: none; border-color: var(--accent); }
-    label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
-
-    .btn-primary {
-      width: 100%; background: var(--accent); color: white;
-      padding: 16px; border-radius: 12px; font-weight: 600;
-      border: none; cursor: pointer; font-size: 1rem; transition: 0.2s;
-    }
-    .btn-primary:hover { background: #7c4dff; transform: scale(0.99); }
+    .modal-scroll { padding: 25px; overflow-y: auto; }
     
-    .btn-secondary {
-        width: 100%; background: #333; color: white;
-        padding: 16px; border-radius: 12px; font-weight: 600;
-        border: none; cursor: pointer; font-size: 1rem; margin-top: 10px;
+    /* DETAIL VIEW SPECIFICS */
+    .detail-header { position: relative; height: 250px; }
+    .detail-header img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-overlay {
+      position: absolute; inset: 0; background: linear-gradient(to top, #0e0e11 0%, transparent 100%);
+    }
+    .detail-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 40px; height: 40px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.1); z-index: 10;
     }
 
-    .btn-ai-ghost {
-      background: transparent; border: 1px solid var(--glass-border); color: var(--accent-text);
-      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-      padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.2s;
-    }
-    .btn-ai-ghost:hover { border-color: var(--accent); background: rgba(139, 92, 246, 0.05); }
+    .stat-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed var(--border-glass); font-size: 0.95rem; }
+    .stat-label { color: var(--text-muted); }
 
-    /* --- AI VERDICT PILL --- */
-    .ai-verdict {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 16px; border-radius: 100px;
-      background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
-      cursor: pointer; transition: 0.2s;
+    /* AI CHAT & ANALYSIS */
+    .ai-box {
+      background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-md); padding: 15px; margin: 20px 0;
+      position: relative; overflow: hidden;
     }
-    .ai-verdict:hover { background: rgba(255,255,255,0.08); }
-    .status-dot { 
-        width: 8px; height: 8px; border-radius: 50%; 
-        background: var(--text-muted); /* Default Neutral */
+    .ai-box::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary);
     }
+    .ai-badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px;
+      color: var(--primary); text-transform: uppercase; margin-bottom: 8px;
+    }
+    
+    .chat-bubble {
+      background: #1a1a1d; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px;
+      font-size: 0.9rem; line-height: 1.5; border: 1px solid var(--border-glass);
+    }
+    .chat-bubble.ai { border-left: 3px solid var(--accent); border-radius: 4px 12px 12px 12px; }
+    .chat-bubble.user { background: var(--primary); color: white; border: none; align-self: flex-end; border-radius: 12px 12px 4px 12px; margin-left: auto; width: fit-content; max-width: 80%; }
 
-    /* Loading Spinner */
-    .spinner { animation: spin 1s linear infinite; }
+    /* CONTROLS */
+    .btn {
+      width: 100%; padding: 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border-glass); color: var(--text-muted); }
+    .btn-ghost:hover { border-color: var(--text-main); color: var(--text-main); }
+    
+    input, select, textarea {
+      width: 100%; background: #1a1a1d; border: 1px solid #333; color: white;
+      padding: 14px; border-radius: 12px; margin-bottom: 15px; font-family: inherit;
+    }
+    input:focus { outline: none; border-color: var(--primary); }
+
+    /* FLOATING ACTION BUTTON */
+    .fab {
+      position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+      background: var(--text-main); color: black; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+      box-shadow: 0 0 30px rgba(255,255,255,0.3); z-index: 90; cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .fab:hover { transform: rotate(90deg) scale(1.1); }
+
+    /* TOAST */
+    #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 300; display: flex; flex-direction: column; gap: 10px; width: 90%; pointer-events: none; }
+    .toast { background: #111; border: 1px solid #333; padding: 12px 20px; border-radius: 50px; color: white; font-size: 0.9rem; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 10px; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* LOADING SPINNER */
+    .spinner { animation: spin 0.8s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* --- TOAST NOTIFICATIONS --- */
-    #toastContainer {
-        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-        z-index: 2000;
-        display: flex; flex-direction: column; gap: 10px;
-        width: 90%; max-width: 400px;
-    }
-    .toast {
-        background: #111; border: 1px solid var(--glass-border);
-        padding: 15px 20px; border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        display: flex; align-items: center; justify-content: space-between;
-        opacity: 1; transition: opacity 0.3s;
-        border-left: 4px solid var(--accent);
-        font-size: 0.9rem;
-    }
-    .toast.success { border-left-color: var(--success-color); }
-    .toast i { color: var(--accent); }
-    .toast.success i { color: var(--success-color); }
-
-    /* --- DETAIL MODAL SPECIFIC STYLES --- */
-    .detail-img {
-        width: 100%; aspect-ratio: 1; object-fit: cover;
-        border-radius: 16px; margin-bottom: 20px;
-        background: #222;
-    }
-    .detail-price {
-        font-size: 2.5rem; font-weight: 700; color: var(--accent);
-        font-family: var(--font-display); line-height: 1;
-        margin-bottom: 15px;
-    }
-    .detail-info-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);
-        font-size: 0.9rem;
-    }
-    .detail-info-row span:first-child { color: var(--text-muted); }
   </style>
 </head>
 <body>
 
-  <!-- TOAST CONTAINER -->
-  <div id="toastContainer"></div>
+  <!-- TOASTS -->
+  <div id="toast-container"></div>
 
   <!-- HEADER -->
   <header>
     <div class="brand" onclick="window.scrollTo(0,0)">
-      <div class="brand-dot"></div> OneDrop
+      <span>One</span>Drop <i class="fas fa-bolt" style="font-size: 0.8em; color: var(--accent);"></i>
     </div>
-    <div class="nav-actions">
-      <i class="fas fa-search icon-btn"></i>
-      <div style="width:32px; height:32px; background:#333; border-radius:50%; overflow:hidden;">
-        <img src="https://placehold.co/100x100/333/FFF?text=ME" onerror="this.src='https://placehold.co/100x100/333/FFF?text=ME'" style="width:100%; height:100%; object-fit:cover;">
+    
+    <div style="display:flex; gap:15px; align-items:center;">
+      <div class="wallet-pill">
+        <i class="fas fa-wallet"></i>
+        <span class="wallet-amount" id="userBalance">€1,250.00</span>
       </div>
+      <div style="width:36px; height:36px; background: linear-gradient(45deg, var(--primary), var(--accent)); border-radius:50%;"></div>
     </div>
   </header>
 
-  <!-- MARQUEE / SLIDER -->
-  <div class="marquee-container">
-    <div class="marquee-content" id="marquee">
-      <!-- Filled via JS -->
-    </div>
+  <!-- HERO -->
+  <div class="hero fade-in">
+    <h1 class="hero-title">Cop or <span class="text-accent">Drop.</span><br>The Market is Live.</h1>
+    <p class="hero-subtitle">Real-time pricing. AI-powered Legit Checks. Die heftigsten Deals, bevor sie weg sind.</p>
   </div>
 
   <!-- MAIN GRID -->
-  <main id="app">
-    <h2 style="margin-bottom: 30px; font-size: 2rem; font-weight:300;">Live <span style="font-weight:700">Market</span></h2>
-    <div class="grid" id="productGrid"></div>
-  </main>
+  <main class="grid" id="productGrid"></main>
 
-  <!-- CREATE BUTTON -->
-  <div class="fab-btn" onclick="app.openModal('upload')">
+  <!-- FAB -->
+  <div class="fab" onclick="app.openModal('create')">
     <i class="fas fa-plus"></i>
   </div>
 
-  <!-- AI VERDICT MODAL -->
-  <div class="modal-backdrop" id="aiModal">
-    <div class="modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-size:1.5rem;"><i class="fas fa-sparkles" style="color:var(--accent)"></i> Gemini Insight</h3>
-        <i class="fas fa-times" onclick="app.closeModals()" style="cursor:pointer; padding:10px;"></i>
+  <!-- CREATE MODAL -->
+  <div class="modal-backdrop" id="createModal">
+    <div class="modal-panel">
+      <div class="modal-scroll">
+        <h3 style="margin-bottom: 20px;">Drop erstellen</h3>
+        <form onsubmit="app.handleCreate(event)">
+          <label style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px; display:block;">Produktname</label>
+          <input type="text" id="cTitle" name="title" placeholder="z.B. Supreme Box Logo" required onblur="app.autoTagCategory()">
+          
+          <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <button type="button" class="btn btn-ghost" style="font-size:0.8rem; padding:10px;" onclick="app.aiPriceSuggest()">
+              <i class="fas fa-magic text-accent"></i> AI Price
+            </button>
+            <button type="button" class="btn btn-ghost" style="font-size:0.8rem; padding:10px;" onclick="app.aiHypeDescription()">
+              <i class="fas fa-fire text-accent"></i> AI Hype Text
+            </button>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+              <label style="font-size:0.8rem; color:var(--text-muted);">Startpreis (€)</label>
+              <input type="number" id="cStart" name="start" required>
+            </div>
+            <div style="flex:1;">
+               <label style="font-size:0.8rem; color:var(--text-muted);">Drop Step (€)</label>
+               <input type="number" id="cStep" name="step" value="5" required>
+            </div>
+          </div>
+          
+          <label style="font-size:0.8rem; color:var(--text-muted);">Beschreibung</label>
+          <textarea id="cDesc" name="desc" rows="3" placeholder="Condition, Flaws, etc."></textarea>
+          
+          <button type="submit" class="btn btn-primary">Drop It 🔥</button>
+          <button type="button" class="btn btn-ghost" onclick="app.closeModals()" style="margin-top:10px;">Cancel</button>
+        </form>
       </div>
-      <div id="aiText" style="line-height:1.6; color:#ccc; margin-bottom:30px;">
-        Loading analysis...
-      </div>
-      <button class="btn-primary" onclick="app.closeModals()">Verstanden</button>
     </div>
   </div>
 
-  <!-- UPLOAD MODAL -->
-  <div class="modal-backdrop" id="uploadModal">
-    <div class="modal-content">
-      <h3 style="margin-bottom:25px; font-size:1.5rem;">Create Drop</h3>
-      <form onsubmit="app.createDrop(event)">
-        <label>Produktname</label>
-        <input type="text" name="title" id="inTitle" placeholder="z.B. Stone Island Crewneck" required>
-        
-        <!-- AI Features Row -->
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button type="button" class="btn-ai-ghost" onclick="app.predictPriceReal()">
-                <i class="fas fa-chart-line"></i> ✨ Gemini Pricing
-            </button>
-            <button type="button" class="btn-ai-ghost" onclick="app.generateDescriptionReal()">
-                <i class="fas fa-pen-fancy"></i> ✨ Auto-Desc
-            </button>
-        </div>
-
-        <div style="display:flex; gap:15px;">
-          <div style="flex:1;">
-            <label>Startpreis (€)</label>
-            <input type="number" name="start" id="inStart" placeholder="250" required>
-          </div>
-          <div style="flex:1;">
-            <label>Drop Step (€)</label>
-            <input type="number" name="step" id="inStep" value="5" placeholder="5" required>
-          </div>
-        </div>
-        
-        <label>Drop Intervall (Sekunden)</label>
-        <select name="interval" id="inInterval">
-          <option value="10">Aggressiv (10s)</option>
-          <option value="30">Schnell (30s)</option>
-          <option value="60" selected>Standard (60s)</option>
-        </select>
-
-        <label>Beschreibung (Optional)</label>
-        <textarea name="description" id="inDesc" rows="3" placeholder="Zustand, Details..."></textarea>
-
-        <button type="submit" class="btn-primary">Drop Veröffentlichen</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- DETAIL MODAL (NEW FEATURE) -->
+  <!-- DETAIL MODAL -->
   <div class="modal-backdrop" id="detailModal">
-    <div class="modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 id="detailTitle" style="font-size:1.8rem; font-family:var(--font-display)">Product Detail</h3>
-        <i class="fas fa-times" onclick="app.closeModals()" style="cursor:pointer; padding:10px;"></i>
+    <div class="modal-panel">
+      <!-- Image Header -->
+      <div class="detail-header">
+        <div class="detail-overlay"></div>
+        <img id="dImg" src="" alt="">
+        <div class="detail-close" onclick="app.closeModals()"><i class="fas fa-times"></i></div>
+        <div style="position:absolute; bottom:20px; left:20px; right:20px;">
+          <h2 id="dTitle" style="font-size:1.8rem; margin-bottom:5px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">Title</h2>
+          <div style="display:flex; align-items:center; gap:10px;">
+             <span class="live-badge" style="position:static;"><div class="dot-pulse"></div> LIVE</span>
+             <span id="dCategory" style="font-size:0.8rem; opacity:0.8; border:1px solid rgba(255,255,255,0.3); padding:2px 8px; border-radius:4px;">Tech</span>
+          </div>
+        </div>
       </div>
-      
-      <div id="detailContent">
-        <!-- Content filled by JS -->
-      </div>
-      
-      <div style="margin-top: 30px; text-align: center;">
-        <button class="btn-primary" id="buyButton">BUY NOW</button>
-        <button class="btn-secondary" onclick="app.closeModals()">Zurück</button>
+
+      <div class="modal-scroll">
+        <!-- Price Large -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px;">
+            <div>
+                <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Aktueller Preis</div>
+                <div id="dPrice" class="text-accent" style="font-family:var(--font-display); font-size:2.5rem; font-weight:700;">€0.00</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:0.8rem; color:var(--text-muted);">Nächster Drop in</div>
+                <div id="dTimer" style="font-variant-numeric: tabular-nums; font-weight:700; font-size:1.2rem;">00s</div>
+            </div>
+        </div>
+
+        <!-- AI Analysis Box (Auto-Runs) -->
+        <div class="ai-box" id="aiAnalysisBox">
+          <div class="ai-badge"><i class="fas fa-robot"></i> Gemini Market Check</div>
+          <div id="aiAnalysisText" style="font-size:0.9rem; line-height:1.5;">
+            <i class="fas fa-circle-notch spinner"></i> Scanne Resell-Plattformen...
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; gap:15px; margin-bottom:15px; border-bottom:1px solid var(--border-glass);">
+            <div onclick="app.switchTab('info')" class="tab-btn active" style="padding-bottom:10px; cursor:pointer; border-bottom:2px solid var(--primary);">Info</div>
+            <div onclick="app.switchTab('chat')" class="tab-btn" style="padding-bottom:10px; cursor:pointer; color:var(--text-muted);">Chat mit Seller</div>
+        </div>
+
+        <!-- Tab Content: Info -->
+        <div id="tab-info">
+            <p id="dDesc" style="color:var(--text-muted); line-height:1.6; margin-bottom:20px;">...</p>
+            <div class="stat-row"><span>Startpreis</span><span id="dStart">€0</span></div>
+            <div class="stat-row"><span>Minimum</span><span id="dMin">€0</span></div>
+            <div class="stat-row"><span>Drop Step</span><span id="dStep">€0</span></div>
+        </div>
+
+        <!-- Tab Content: Chat -->
+        <div id="tab-chat" style="display:none;">
+            <div id="chatHistory" style="height:150px; overflow-y:auto; margin-bottom:10px; padding:10px; background:rgba(0,0,0,0.2); border-radius:12px;">
+                <div class="chat-bubble ai">Yo! Ich bin der Seller. Was geht? Preis zu hoch? Der Drop regelt das. 😎</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chatInput" placeholder="Frag was..." style="margin:0; padding:10px;">
+                <button class="btn-primary" style="width:auto; padding:0 20px;" onclick="app.sendChat()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <div style="margin-top:25px;">
+           <button class="btn btn-primary" onclick="app.buyItem()">
+             <span style="font-size:1.2rem;">COP NOW</span> <i class="fas fa-shopping-bag"></i>
+           </button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const apiKey = ""; // System provides this
+    // --- GEMINI CONFIG ---
+    const apiKey = ""; // System injected
+    
+    // --- UTIL ---
+    const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
-    // Utility function for exponential backoff (for robust API calls)
-    async function fetchWithRetry(url, options, retries = 3) {
-        for (let i = 0; i < retries; i++) {
-            try {
-                const response = await fetch(url, options);
-                if (response.ok) return response;
-                // If response is not ok, throw error to trigger retry
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } catch (error) {
-                if (i < retries - 1) {
-                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                } else {
-                    throw error; // Last retry failed
-                }
-            }
-        }
+    async function geminiCall(prompt, jsonMode = false) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        systemInstruction: { parts: [{ text: "Du bist eine KI in einer Streetwear-Marktplatz-App. Du sprichst Deutsch, bist locker, nutzt Slang (Gen Z) aber bleibst hilfreich. Markdown ist verboten, nur reiner Text." }] }
+      };
+      
+      if(jsonMode) {
+        payload.generationConfig = { responseMimeType: "application/json" };
+      }
+
+      try {
+        const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)});
+        const data = await res.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text;
+      } catch(e) { console.error(e); return null; }
     }
 
+    // --- APP ---
     const app = {
-      state: {
-        products: [
-          {
-            id: 1,
-            title: "Acne Studios Scarf",
-            img: "https://placehold.co/800x800/1a1a1a/e5e5e5?text=ACNE",
-            startPrice: 180.00,
-            minPrice: 90.00,
-            dropAmount: 2.50,
-            dropInterval: 15,
-            startTime: Date.now() - (1000 * 5),
-            category: 'Accessory',
-            description: "Classic oversized scarf. Worn twice. No flaws. Ein Must-have für diesen Winter, hält dich warm und sieht krass aus."
-          },
-          {
-            id: 2,
-            title: "Sony PS5 Pro (Sealed)",
-            img: "https://placehold.co/800x800/1a1a1a/8b5cf6?text=PS5+PRO",
-            startPrice: 850.00,
-            minPrice: 600.00,
-            dropAmount: 10.00,
-            dropInterval: 60,
-            startTime: Date.now() - (1000 * 30),
-            category: 'Tech',
-            description: "Brand new, sealed. Receipt available. Der heilige Gral unter den Konsolen, direkt zum Release gekauft, jetzt dein Cop."
-          },
-          {
-            id: 3,
-            title: "Jordan 4 Black Canvas",
-            img: "https://placehold.co/800x800/1a1a1a/00d2ff?text=J4",
-            startPrice: 320.00,
-            minPrice: 150.00,
-            dropAmount: 5.00,
-            dropInterval: 45,
-            startTime: Date.now() - (1000 * 120),
-            category: 'Sneaker',
-            description: "Size US 10. Deadstock condition. Cleanest Pair auf dem Market, wer hier pennt, hat den Drop verpasst."
-          }
-        ]
-      },
+      userBalance: 1250.00,
+      activeProduct: null,
+      products: [
+        { id: 1, title: "Jordan 1 Retro High Travis Scott", img: "https://placehold.co/600x600/222/FFF?text=TRAVIS", startPrice: 1200, minPrice: 850, step: 5, interval: 10, startTime: Date.now(), category: "Sneaker", desc: "Grail Alert! 🚨 Condition 9/10. Box dabei. Laces untouched. Wer hier pennt, ist selbst schuld." },
+        { id: 2, title: "Supreme Box Logo Hoodie (Grey)", img: "https://placehold.co/600x600/888/FFF?text=BOGO", startPrice: 450, minPrice: 280, step: 2, interval: 30, startTime: Date.now() - 50000, category: "Hoodie", desc: "Der Klassiker schlechthin. Heavyweight Cotton. Size L. Fitted true to size. Sheesh." },
+        { id: 3, title: "Apple AirPods Max Space Grey", img: "https://placehold.co/600x600/111/FFF?text=MAX", startPrice: 520, minPrice: 350, step: 1, interval: 60, startTime: Date.now() - 120000, category: "Tech", desc: "Noise Cancelling regelt. Kaum benutzt, Akku noch wie neu. OVP vorhanden." }
+      ],
 
       init() {
-        this.renderGrid();
-        this.renderMarquee();
-        setInterval(() => this.tick(), 100);
+        this.render();
+        setInterval(() => this.tick(), 500); // UI Update loop
       },
 
-      /* --- UI UTILITIES --- */
-      toast(msg, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        const el = document.createElement('div');
-        el.className = `toast ${type}`;
-        el.innerHTML = `<span>${msg}</span> <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>`;
-        container.appendChild(el);
-        // Clean up after animation
-        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
-      },
-
-      openModal(id) { document.getElementById(id + 'Modal').classList.add('active'); },
-      closeModals() { document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active')); },
-
-      /* --- CORE DROP LOGIC --- */
-      calculate(p) {
+      /* --- CORE LOGIC --- */
+      getPriceData(p) {
         const now = Date.now();
-        const elapsedSeconds = Math.floor((now - p.startTime) / 1000);
-        const intervalsPassed = Math.floor(elapsedSeconds / p.dropInterval);
+        const elapsedSec = Math.floor((now - p.startTime) / 1000);
+        const intervals = Math.floor(elapsedSec / p.interval);
         
-        let currentPrice = p.startPrice - (intervalsPassed * p.dropAmount);
-        if (currentPrice < p.minPrice) currentPrice = p.minPrice;
+        let price = p.startPrice - (intervals * p.step);
+        if (price < p.minPrice) price = p.minPrice;
+        
+        const secInInterval = elapsedSec % p.interval;
+        const timeLeft = p.interval - secInInterval;
+        const progress = (secInInterval / p.interval) * 100;
 
-        const secondsIntoCurrentInterval = elapsedSeconds % p.dropInterval;
-        const secondsLeft = p.dropInterval - secondsIntoCurrentInterval;
-        const progress = (secondsLeft / p.dropInterval) * 100;
-
-        return { 
-          price: currentPrice.toFixed(2), 
-          timeLeft: secondsLeft, 
-          progress: progress,
-          isMin: currentPrice <= p.minPrice
-        };
+        return { price: price.toFixed(2), timeLeft, progress, isMin: price <= p.minPrice };
       },
 
       tick() {
-        this.state.products.forEach(p => {
-          const data = this.calculate(p);
-          const card = document.getElementById(`card-${p.id}`);
-          if(!card) return;
+        this.products.forEach(p => {
+            const data = this.getPriceData(p);
+            
+            // Grid Updates
+            const cardPrice = document.getElementById(`p-price-${p.id}`);
+            if(cardPrice) cardPrice.innerText = `€${data.price}`;
+            
+            const bar = document.getElementById(`p-bar-${p.id}`);
+            if(bar) bar.style.width = data.isMin ? '100%' : `${data.progress}%`;
 
-          const priceEl = card.querySelector('.price-value');
-          if(priceEl.innerText !== data.price) {
-             priceEl.innerText = data.price;
-             priceEl.style.color = 'var(--accent)';
-             setTimeout(() => priceEl.style.color = 'var(--text-main)', 300);
-          }
-
-          const circle = card.querySelector('.timer-circle-fg');
-          const text = card.querySelector('.timer-text');
-          
-          if(data.isMin) {
-            text.innerText = "MIN";
-            circle.style.strokeDashoffset = 100;
-            circle.style.stroke = "var(--text-muted)";
-          } else {
-            text.innerText = data.timeLeft;
-            const offset = 100 - data.progress;
-            circle.style.strokeDashoffset = offset;
-          }
+            // Detail Modal Updates (if open)
+            if(this.activeProduct && this.activeProduct.id === p.id) {
+                document.getElementById('dPrice').innerText = `€${data.price}`;
+                document.getElementById('dTimer').innerText = data.isMin ? 'MIN' : `${data.timeLeft}s`;
+                document.getElementById('dTimer').style.color = data.timeLeft < 5 ? 'var(--danger)' : 'var(--text-main)';
+            }
         });
       },
 
-      /* --- GEMINI API INTEGRATION --- */
-      async callGemini(prompt, useGrounding = false, responseMimeType = "text/plain", responseSchema = null) {
-        let payload = {
-            contents: [{ parts: [{ text: prompt }] }],
-            systemInstruction: { parts: [{ text: "Du bist ein erfahrener Marktplatz-Assistent und sprichst nur Deutsch." }] }
-        };
-
-        if (useGrounding) {
-            payload.tools = [{ "google_search": {} }];
-        }
-        
-        if (responseMimeType === "application/json" && responseSchema) {
-            payload.generationConfig = {
-                responseMimeType: "application/json",
-                responseSchema: responseSchema
-            };
-        }
-
-        try {
-          const response = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const data = await response.json();
-          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          return text;
-        } catch (error) {
-          console.error("Gemini API Error:", error);
-          this.toast("Gemini API Fehler. Bitte versuche es später erneut.", 'error');
-          return null;
-        }
-      },
-
-      // Feature 1: AI Price Consultant (Uses Grounding, Structured JSON)
-      async predictPriceReal() {
-        const title = document.getElementById('inTitle').value;
-        if(!title) { this.toast("Bitte zuerst einen Produktnamen eingeben!", 'info'); return; }
-
-        const btn = document.querySelector('button[onclick="app.predictPriceReal()"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Scanning...';
-
-        const prompt = `
-          Du bist ein Pricing-Experte für einen Streetwear/Tech-Marktplatz und nutzt Google Search für aktuelle Marktpreise.
-          Das Produkt ist: "${title}".
-          Schlage 3 Werte im JSON-Format vor (ohne Markdown, nur der JSON-String):
-          1. "start": realistischer Startpreis in Euro (high estimate).
-          2. "step": Drop-Betrag pro Intervall (z.B. 2-10).
-          3. "interval": Zeitintervall in Sekunden (10, 30 oder 60).
-          Antworte NUR mit dem JSON String.
-        `;
-        
-        const schema = {
-            type: "OBJECT",
-            properties: {
-                "start": { "type": "NUMBER" },
-                "step": { "type": "NUMBER" },
-                "interval": { "type": "INTEGER" }
-            },
-            propertyOrdering: ["start", "step", "interval"]
-        };
-
-        const result = await this.callGemini(prompt, true, "application/json", schema);
-        
-        try {
-          const data = JSON.parse(result);
-          
-          document.getElementById('inStart').value = data.start.toFixed(2);
-          document.getElementById('inStep').value = data.step.toFixed(2);
-          
-          const options = [10, 30, 60];
-          const closest = options.reduce((prev, curr) => Math.abs(curr - data.interval) < Math.abs(prev - data.interval) ? curr : prev);
-          document.getElementById('inInterval').value = closest;
-
-          btn.innerHTML = '<i class="fas fa-check"></i> Applied';
-          this.toast("Pricing erfolgreich von Gemini übernommen!", 'success');
-          setTimeout(() => btn.innerHTML = originalText, 2000);
-        } catch (e) {
-            console.error("Parsing Error", e);
-            btn.innerHTML = 'Error';
-            this.toast("Gemini konnte kein valides Pricing generieren.", 'error');
-            setTimeout(() => btn.innerHTML = originalText, 2000);
-        }
-      },
-
-      // Feature 2: AI Description Generator
-      async generateDescriptionReal() {
-        const title = document.getElementById('inTitle').value;
-        if(!title) { this.toast("Bitte zuerst einen Produktnamen eingeben!", 'info'); return; }
-
-        const btn = document.querySelector('button[onclick="app.generateDescriptionReal()"]');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Writing...';
-
-        const prompt = `
-          Schreibe eine kurze, hypende Verkaufsbeschreibung für "${title}" auf Deutsch.
-          Nutze Jugendsprache / Streetwear-Slang (clean, cop, deadstock, grail).
-          Antworte nur mit dem Text, ohne Markdown-Formatierung. Maximal 2 Sätze.
-        `;
-
-        const text = await this.callGemini(prompt, false);
-        if(text) {
-            document.getElementById('inDesc').value = text.trim().replace(/\*/g, ''); // Fix: Remove asterisks
-            btn.innerHTML = '<i class="fas fa-check"></i> Done';
-            this.toast("Hype-Text generiert!", 'success');
-        } else {
-            btn.innerHTML = 'Error';
-        }
-        setTimeout(() => btn.innerHTML = originalText, 2000);
-      },
-
-      // Feature 3: AI Deal Verdict (Uses Grounding)
-      async showAIReal(title, currentPrice, id) {
-        const modal = document.getElementById('aiModal');
-        const textEl = document.getElementById('aiText');
-        
-        modal.classList.add('active');
-        textEl.innerHTML = '<div style="text-align:center"><i class="fas fa-spinner spinner" style="font-size:2rem; color:var(--accent)"></i><br><br>Gemini analysiert den Markt...</div>';
-
-        const prompt = `
-          Analysiere diesen Deal auf einem Drop-Marktplatz unter Berücksichtigung von aktuellen Marktpreisen, die du recherchieren sollst:
-          Produkt: "${title}"
-          Aktueller Preis: ${currentPrice}€
-          
-          Ist das ein "Good Deal" (unter Marktwert), ein "Mid Deal" (fairer Preis) oder ein "Bad Deal" (über Marktwert)?
-          Erkläre deine Einschätzung kurz (maximal 2 Sätze) auf Deutsch, ohne Markdown-Formatierung. Nenne zuerst deine Einstufung (Good Deal, Mid Deal oder Bad Deal).
-        `;
-
-        const analysis = await this.callGemini(prompt, true); // Use Grounding
-        
-        if (analysis) {
-             // Fix 2: Replace newlines with <br> for better readability and prevent unparsed markdown issues
-            textEl.innerHTML = analysis.trim().replace(/\n/g, '<br>');
-        } else {
-            textEl.innerText = "Konnte keine Verbindung zu Gemini herstellen oder keine Analyse durchführen.";
-        }
-      },
-
-
-      /* --- DETAIL VIEW & PURCHASE FLOW --- */
-      openDetailModal(productId) {
-        const p = this.state.products.find(prod => prod.id === productId);
-        if (!p) return this.toast("Produkt nicht gefunden!", 'error');
-
-        const data = this.calculate(p);
-        document.getElementById('detailTitle').innerText = p.title;
-        const contentEl = document.getElementById('detailContent');
-        
-        const html = `
-            <img src="${p.img}" alt="${p.title}" class="detail-img">
-            <div class="detail-price">€${data.price}</div>
-            
-            <div style="margin-bottom: 25px; line-height: 1.5; color: var(--text-main);">${p.description}</div>
-
-            <div class="detail-info-row">
-                <span>Drop Start</span>
-                <span>€${p.startPrice.toFixed(2)}</span>
-            </div>
-            <div class="detail-info-row">
-                <span>Mindestpreis</span>
-                <span>€${p.minPrice.toFixed(2)}</span>
-            </div>
-            <div class="detail-info-row">
-                <span>Drop Step / Intervall</span>
-                <span>€${p.dropAmount.toFixed(2)} / ${p.dropInterval}s</span>
-            </div>
-            <div class="detail-info-row">
-                <span>Kategorie</span>
-                <span>${p.category}</span>
-            </div>
-            <div class="detail-info-row">
-                <span>Verbleibende Zeit im Intervall</span>
-                <span id="detailTimeLeft">${data.timeLeft}s</span>
-            </div>
-            
-            <div style="margin-top:20px; text-align:center;">
-                <div class="ai-verdict" onclick="app.showAIReal('${p.title}', '${data.price}', ${p.id})" style="width:100%; justify-content:center;">
-                    <div class="status-dot" style="background:var(--accent)"></div> LIVE AI DEAL CHECK
-                </div>
-            </div>
-        `;
-        
-        contentEl.innerHTML = html;
-        document.getElementById('buyButton').onclick = () => this.simulatePurchase(p.id, data.price);
-
-        // Keep detail time updated
-        const updateDetailTime = () => {
-             const newData = this.calculate(p);
-             const timeEl = document.getElementById('detailTimeLeft');
-             const priceEl = document.querySelector('.detail-price');
-             
-             if (timeEl) timeEl.innerText = newData.isMin ? 'MIN' : `${newData.timeLeft}s`;
-             if (priceEl) priceEl.innerText = `€${newData.price}`;
-             
-             // Stop updating if modal is closed
-             if (!document.getElementById('detailModal').classList.contains('active')) {
-                 clearInterval(this.detailUpdateInterval);
-             }
-        };
-        // Clear previous interval if exists
-        if (this.detailUpdateInterval) clearInterval(this.detailUpdateInterval);
-        this.detailUpdateInterval = setInterval(updateDetailTime, 500);
-
-        this.openModal('detail');
-      },
-
-      simulatePurchase(productId, finalPrice) {
-        // --- Simulated Checkout Process ---
-        this.closeModals();
-        this.toast(`Starte Zahlung für ${finalPrice}€...`, 'info');
-
-        // Simulate a delay for payment processing
-        setTimeout(() => {
-          const success = Math.random() > 0.1; // 90% success rate
-
-          if (success) {
-            this.toast(`Kauf erfolgreich! ${finalPrice}€ für das Produkt ${productId} bezahlt.`, 'success');
-            // Remove item from the list
-            this.state.products = this.state.products.filter(p => p.id !== productId);
-            this.renderGrid();
-            this.renderMarquee();
-          } else {
-            this.toast("Zahlung fehlgeschlagen. Versuche es erneut.", 'error');
-          }
-        }, 1500);
-      },
-
-      /* --- RENDERING --- */
-      renderGrid() {
-        const container = document.getElementById('productGrid');
-        container.innerHTML = this.state.products.map(p => this.createCardHTML(p)).join('');
-      },
-
-      createCardHTML(p) {
-        const data = this.calculate(p);
-        
-        // Fix 1: Dot is now just neutral, because the actual AI analysis is triggered on click
-        // The color logic is now complex, let's keep it simple: grey dot until clicked.
-        const dotColor = 'var(--text-muted)'; 
-        
-        return `
-          <div class="card fade-up" id="card-${p.id}" onclick="app.openDetailModal(${p.id})">
-            <div class="card-img-container">
-              <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null; this.src='https://placehold.co/800x800/1a1a1a/e5e5e5?text=${p.title.split(' ')[0].toUpperCase()}'">
-              <div class="card-badges">
-                <div class="badge accent">LIVE</div>
-                <div class="badge">${p.category}</div>
+      /* --- RENDER --- */
+      render() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = this.products.map(p => {
+          const data = this.getPriceData(p);
+          return `
+            <div class="card fade-in" onclick="app.openDetail(${p.id})">
+              <div class="card-media">
+                <img src="${p.img}" loading="lazy">
+                <div class="live-badge"><div class="dot-pulse"></div> LIVE DROP</div>
               </div>
-            </div>
-            
-            <div class="card-info">
-              <div>
+              <div class="card-body">
                 <div class="card-title">${p.title}</div>
-                <div class="card-sub">
-                  <span>Start: €${p.startPrice.toFixed(2)}</span>
-                  <!-- Trigger AI Verdict, opens the specific AI modal first -->
-                  <div class="ai-verdict" onclick="event.stopPropagation(); app.showAIReal('${p.title}', '${data.price}', ${p.id})">
-                    <div class="status-dot" style="background:${dotColor}"></div> ✨ Gemini Check
-                  </div>
-                </div>
-              </div>
-
-              <div class="price-row">
-                <div>
-                  <div class="price-label">Current Price</div>
-                  <div class="price-main">€ <span class="price-value">${data.price}</span></div>
-                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">${p.category}</div>
                 
-                <div class="timer-ring">
-                  <svg class="timer-svg" viewBox="0 0 36 36">
-                    <path class="timer-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    <path class="timer-circle-fg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  </svg>
-                  <div class="timer-text">${data.timeLeft}</div>
+                <div class="price-container">
+                    <div>
+                        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase;">Current Bid</div>
+                        <div class="current-price" id="p-price-${p.id}">€${data.price}</div>
+                    </div>
+                    <div style="text-align:right;">
+                       <i class="fas fa-arrow-down text-accent"></i>
+                    </div>
                 </div>
+                <div class="drop-progress"><div class="drop-bar" id="p-bar-${p.id}"></div></div>
               </div>
             </div>
-          </div>
-        `;
+          `;
+        }).join('');
       },
 
-      renderMarquee() {
-        const mq = document.getElementById('marquee');
-        const items = this.state.products.map(p => 
-          `<div class="marquee-item"><span>NEW IN</span> ${p.title.toUpperCase()} — €${p.startPrice.toFixed(2)}</div>`
-        ).join('');
-        // Duplicate content for smooth infinite scroll effect
-        mq.innerHTML = items + items + items;
+      /* --- MODALS --- */
+      openModal(id) { document.getElementById(id+'Modal').classList.add('active'); },
+      closeModals() { 
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active')); 
+        this.activeProduct = null;
       },
 
-      createDrop(e) {
+      async openDetail(id) {
+        const p = this.products.find(x => x.id === id);
+        this.activeProduct = p;
+        const data = this.getPriceData(p);
+
+        // Fill Data
+        document.getElementById('dImg').src = p.img;
+        document.getElementById('dTitle').innerText = p.title;
+        document.getElementById('dCategory').innerText = p.category;
+        document.getElementById('dDesc').innerText = p.desc;
+        document.getElementById('dStart').innerText = `€${p.startPrice}`;
+        document.getElementById('dMin').innerText = `€${p.minPrice}`;
+        document.getElementById('dStep').innerText = `€${p.step}`;
+        
+        // Reset Chat
+        document.getElementById('chatHistory').innerHTML = `<div class="chat-bubble ai">Yo! Ich bin der Seller. Was geht? Preis zu hoch? Der Drop regelt das. 😎</div>`;
+        this.switchTab('info');
+        
+        this.openModal('detail');
+
+        // Trigger Auto-Gemini Analysis
+        this.runGeminiAnalysis(p, data.price);
+      },
+
+      switchTab(tab) {
+          document.querySelectorAll('.tab-btn').forEach(b => b.style.color = 'var(--text-muted)');
+          document.querySelectorAll('.tab-btn').forEach(b => b.style.borderBottom = 'none');
+          
+          if(tab === 'info') {
+              document.getElementById('tab-info').style.display = 'block';
+              document.getElementById('tab-chat').style.display = 'none';
+              document.querySelectorAll('.tab-btn')[0].style.borderBottom = '2px solid var(--primary)';
+              document.querySelectorAll('.tab-btn')[0].style.color = 'white';
+          } else {
+              document.getElementById('tab-info').style.display = 'none';
+              document.getElementById('tab-chat').style.display = 'block';
+              document.querySelectorAll('.tab-btn')[1].style.borderBottom = '2px solid var(--primary)';
+              document.querySelectorAll('.tab-btn')[1].style.color = 'white';
+          }
+      },
+
+      /* --- AI LOGIC --- */
+      async runGeminiAnalysis(p, currentPrice) {
+        const box = document.getElementById('aiAnalysisText');
+        box.innerHTML = `<i class="fas fa-circle-notch spinner"></i> Scanne Resell-Plattformen...`;
+        
+        // Simuliere kurze Wartezeit für UX
+        await wait(1000);
+
+        const prompt = `Analysiere das Produkt "${p.title}" (Kategorie: ${p.category}). Aktueller Drop-Preis ist ${currentPrice} Euro.
+        Recherchiere kurz den aktuellen Marktwert.
+        Entscheide: "COP" (Guter Preis) oder "DROP" (Zu teuer/Warten).
+        Gib eine Begründung in einem kurzen, witzigen Satz im Gen-Z Slang.
+        Format: [COP/DROP] - [Begründung]`;
+
+        const res = await geminiCall(prompt);
+        
+        if(res) {
+            const isCop = res.toLowerCase().includes('cop');
+            const color = isCop ? 'var(--success)' : 'var(--warning)';
+            const icon = isCop ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            
+            box.innerHTML = `
+                <div style="font-size:1.1rem; font-weight:700; color:${color}; margin-bottom:5px;">
+                    <i class="fas ${icon}"></i> ${isCop ? 'COP THAT!' : 'DROP IT / WAIT'}
+                </div>
+                <div style="color:rgba(255,255,255,0.8);">${res.replace(/COP|DROP|\[|\]|-/g, '').trim()}</div>
+            `;
+        } else {
+            box.innerText = "Gemini ist gerade offline. Vertrau deinem Bauchgefühl.";
+        }
+      },
+
+      async aiPriceSuggest() {
+        const title = document.getElementById('cTitle').value;
+        if(!title) return this.toast("Bro, gib erst Produktnamen ein!", "error");
+        
+        this.toast("Gemini checkt die Preise...", "info");
+        const prompt = `Nenne mir für "${title}" 3 Werte als JSON: { "start": number (high estimate), "step": number (drop step), "interval": number (seconds 10-60) }. Nur JSON.`;
+        
+        const res = await geminiCall(prompt, true); // JSON mode request usually needs structured output logic, but prompt engineering works too.
+        try {
+             // Basic clean up if Gemini chats around the JSON
+             const jsonStr = res.substring(res.indexOf('{'), res.lastIndexOf('}')+1);
+             const data = JSON.parse(jsonStr);
+             document.getElementById('cStart').value = data.start;
+             document.getElementById('cStep').value = data.step;
+             this.toast("Pricing applied! 🤑", "success");
+        } catch(e) { this.toast("Konnte Preise nicht laden.", "error"); }
+      },
+
+      async aiHypeDescription() {
+        const title = document.getElementById('cTitle').value;
+        if(!title) return this.toast("Was verkaufst du überhaupt?", "error");
+        
+        const btn = event.target;
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner spinner"></i>';
+        
+        const prompt = `Schreibe eine ultra-kurze (max 20 Wörter) Hype-Beschreibung für "${title}". Nutze Emojis. Gen-Z Stil.`;
+        const text = await geminiCall(prompt);
+        
+        if(text) {
+            document.getElementById('cDesc').value = text;
+            this.toast("Hype-Text generiert!", "success");
+        }
+        btn.innerHTML = oldHtml;
+      },
+
+      async sendChat() {
+          const input = document.getElementById('chatInput');
+          const msg = input.value;
+          if(!msg) return;
+          
+          const history = document.getElementById('chatHistory');
+          history.innerHTML += `<div class="chat-bubble user">${msg}</div>`;
+          history.scrollTop = history.scrollHeight;
+          input.value = '';
+
+          // Fake Typing
+          const typingId = Math.random();
+          history.innerHTML += `<div id="typing-${typingId}" class="chat-bubble ai" style="color:var(--text-muted); font-style:italic;">schreibt...</div>`;
+          history.scrollTop = history.scrollHeight;
+
+          const p = this.activeProduct;
+          const prompt = `Du bist der Verkäufer von "${p.title}". Der Käufer fragt: "${msg}".
+          Antworte kurz, cool, etwas arrogant aber lustig. Du willst verkaufen.
+          Verwende keine Anrede wie "Hallo". Komm direkt zum Punkt.`;
+          
+          const reply = await geminiCall(prompt);
+          
+          document.getElementById(`typing-${typingId}`).remove();
+          if(reply) {
+              history.innerHTML += `<div class="chat-bubble ai">${reply}</div>`;
+              history.scrollTop = history.scrollHeight;
+          }
+      },
+      
+      autoTagCategory() {
+          // Simple local logic, could use AI but too many calls
+          const t = document.getElementById('cTitle').value.toLowerCase();
+          // Placeholder logic
+      },
+
+      /* --- ACTIONS --- */
+      handleCreate(e) {
         e.preventDefault();
         const fd = new FormData(e.target);
-        const startPrice = parseFloat(fd.get('start'));
+        const start = parseFloat(fd.get('start'));
         
-        const newProduct = {
-          id: Date.now(),
-          title: fd.get('title'),
-          img: 'https://placehold.co/800x800/222/FFF?text=DROP',
-          startPrice: startPrice,
-          minPrice: startPrice * 0.5, // Standard 50% minimum
-          dropAmount: parseFloat(fd.get('step')),
-          dropInterval: parseInt(fd.get('interval')),
-          startTime: Date.now(),
-          category: 'Community Drop',
-          description: fd.get('description') || "Keine Beschreibung verfügbar. Vertraue auf den Drop!"
+        const newItem = {
+            id: Date.now(),
+            title: fd.get('title'),
+            img: "https://placehold.co/600x600/333/FFF?text=NEW+DROP",
+            startPrice: start,
+            minPrice: start * 0.4,
+            step: parseFloat(fd.get('step')),
+            interval: 30, // default
+            startTime: Date.now(),
+            category: "Community",
+            desc: fd.get('desc')
         };
-
-        this.state.products.unshift(newProduct);
-        this.renderGrid();
-        this.renderMarquee();
+        
+        this.products.unshift(newItem);
+        this.render();
         this.closeModals();
-        this.toast(`Neuer Drop: ${newProduct.title} erfolgreich veröffentlicht!`, 'success');
+        
+        // Confetti
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        this.toast("Drop ist live! 🚀", "success");
       },
+
+      buyItem() {
+          if(!this.activeProduct) return;
+          const data = this.getPriceData(this.activeProduct);
+          const price = parseFloat(data.price);
+          
+          if(this.userBalance >= price) {
+              this.userBalance -= price;
+              document.getElementById('userBalance').innerText = `€${this.userBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+              
+              // Success Animation
+              confetti({ particleCount: 150, spread: 100, colors: ['#6366f1', '#d946ef'] });
+              
+              this.products = this.products.filter(p => p.id !== this.activeProduct.id);
+              this.closeModals();
+              this.render();
+              
+              this.toast(`GOT 'EM! ${this.activeProduct.title} gehört dir.`, "success");
+          } else {
+              this.toast("Zu wenig Cash im Wallet, Bro. 💸", "error");
+          }
+      },
+
+      toast(msg, type) {
+          const box = document.createElement('div');
+          box.className = 'toast';
+          box.style.borderLeft = `4px solid ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'}`;
+          box.innerHTML = `<span>${msg}</span>`;
+          document.getElementById('toast-container').appendChild(box);
+          setTimeout(() => box.remove(), 3000);
+      }
     };
 
-    document.addEventListener('DOMContentLoaded', () => app.init());
+    // Start
+    app.init();
   </script>
 </body>
 </html>
